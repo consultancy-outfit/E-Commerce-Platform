@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Marcellus, Hanken_Grotesk } from "next/font/google";
 import ThemeRegistry from "@/src/lib/theme/ThemeRegistry";
+import StoreProvider from "@/src/lib/StoreProvider";
+import ToastProvider from "@/src/components/ToastProvider";
 import "./globals.css";
 
 const marcellus = Marcellus({
@@ -32,7 +34,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script dangerouslySetInnerHTML={{ __html: noFlashScript }} />
       </head>
       <body>
-        <ThemeRegistry>{children}</ThemeRegistry>
+        <StoreProvider>
+          <ThemeRegistry>
+            <ToastProvider>{children}</ToastProvider>
+          </ThemeRegistry>
+        </StoreProvider>
       </body>
     </html>
   );

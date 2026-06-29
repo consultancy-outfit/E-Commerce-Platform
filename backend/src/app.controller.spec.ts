@@ -14,9 +14,9 @@ describe('AppController', () => {
     appController = app.get<AppController>(AppController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+  describe('health', () => {
+    it('reports an ok status', () => {
+      expect(appController.getHealth()).toEqual({ status: 'ok', service: 'maison-api' });
     });
   });
 });

@@ -71,16 +71,18 @@ export default function ProductFormModal({ open, onClose, product }: Props) {
     try {
       if (editing && product) {
         await updateProduct({ id: product._id, body: fd }).unwrap();
-        toast({ title: "Product updated", text: form.name });
+        toast({ title: "Product updated", text: form.name, severity: "success" });
       } else {
         await createProduct(fd).unwrap();
-        toast({ title: "Product added", text: form.name });
+        toast({ title: "Product added", text: form.name, severity: "success" });
       }
       onClose();
     } catch (err) {
       const e = err as { data?: { message?: string | string[] } };
       const msg = e.data?.message;
-      setError(Array.isArray(msg) ? msg[0] : msg || "Could not save product");
+      const text = Array.isArray(msg) ? msg[0] : msg || "Could not save product";
+      setError(text);
+      toast({ title: "Couldn't save product", text, severity: "error" });
     }
   };
 

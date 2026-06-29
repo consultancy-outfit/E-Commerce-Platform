@@ -52,10 +52,10 @@ export default function ProductPage() {
     }
     try {
       await addItem({ productId: product._id, size, quantity: qty }).unwrap();
-      toast({ title: "Added to bag", text: `${product.name} · Size ${size}`, actionLabel: "View", onAction: () => router.push("/cart") });
+      toast({ title: "Added to bag", text: `${product.name} · Size ${size}`, severity: "success", actionLabel: "View", onAction: () => router.push("/cart") });
     } catch (err) {
       const e = err as { data?: { message?: string } };
-      toast({ title: "Could not add to bag", text: e.data?.message ?? "Please try again" });
+      toast({ title: "Could not add to bag", text: e.data?.message ?? "Please try again", severity: "error" });
     }
   };
 

@@ -19,10 +19,10 @@ export default function AdminOrdersPage() {
   const change = async (id: string, status: OrderStatus) => {
     try {
       await updateStatus({ id, status }).unwrap();
-      toast({ title: "Status updated", text: status });
+      toast({ title: "Status updated", text: status, severity: "success" });
     } catch (err) {
       const e = err as { data?: { message?: string } };
-      toast({ title: "Invalid transition", text: e.data?.message ?? "Status not changed" });
+      toast({ title: "Invalid transition", text: e.data?.message ?? "Status not changed", severity: "error" });
     }
   };
 

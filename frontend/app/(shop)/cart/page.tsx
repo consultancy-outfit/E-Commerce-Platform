@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBagOutlined";
 import Protected from "@/src/components/Protected";
+import { useToast } from "@/src/components/ToastProvider";
 import { imageUrl } from "@/src/lib/api/baseApi";
 import { gbp } from "@/src/lib/format";
 import {
@@ -14,9 +15,19 @@ import {
 
 function CartInner() {
   const router = useRouter();
+  const toast = useToast();
   const { data: cart, isLoading } = useGetCartQuery();
   const [updateItem] = useUpdateCartItemMutation();
   const [removeItem] = useRemoveCartItemMutation();
+
+  const handleRemove = async (productId: string, size: string, name: string) => {
+    try {
+      await removeItem({ productId, size }).unwrap();
+      toast({ title: "Removed from bag", text: name, severity: "info" });
+    } catch {
+      toast({ title: "Couldn't remove item", severity: "error" });
+    }
+  };
 
   if (isLoading || !cart) {
     return (
@@ -92,7 +103,7 @@ function CartInner() {
               <Box sx={{ textAlign: "right" }}>
                 <Typography sx={{ fontWeight: 600, fontSize: 16, mb: 1.75 }}>{gbp(line.lineTotal)}</Typography>
                 <Typography
-                  onClick={() => removeItem({ productId: line.productId, size: line.size })}
+                  onClick={() => handleRemove(line.productId, line.size, line.product.name)}
                   sx={{ fontWeight: 500, fontSize: 12, color: "text.disabled", textDecoration: "underline", cursor: "pointer" }}
                 >
                   Remove

@@ -16,6 +16,7 @@ import AdminTopbar from "@/src/components/AdminTopbar";
 import StatusBadge from "@/src/components/StatusBadge";
 import ProductFormModal from "@/src/features/admin/ProductFormModal";
 import { useToast } from "@/src/components/ToastProvider";
+import { useConfirm } from "@/src/components/ConfirmProvider";
 import { imageUrl } from "@/src/lib/api/baseApi";
 import { gbp, stockState } from "@/src/lib/format";
 import { useGetProductsQuery } from "@/src/features/products/productsApi";
@@ -28,6 +29,7 @@ export default function AdminProductsPage() {
   const { data, isLoading } = useGetProductsQuery({ limit: 100, page: 1 });
   const [deleteProduct] = useDeleteProductMutation();
   const toast = useToast();
+  const confirm = useConfirm();
 
   const [formOpen, setFormOpen] = React.useState(false);
   const [editProduct, setEditProduct] = React.useState<Product | null>(null);
@@ -37,13 +39,19 @@ export default function AdminProductsPage() {
   const openEdit = (p: Product) => { setEditProduct(p); setView(null); setFormOpen(true); };
 
   const remove = async (p: Product) => {
-    if (!window.confirm(`Delete "${p.name}"? This cannot be undone.`)) return;
+    const ok = await confirm({
+      title: "Delete product",
+      message: `Delete "${p.name}"? This cannot be undone.`,
+      confirmLabel: "Delete",
+      destructive: true,
+    });
+    if (!ok) return;
     try {
       await deleteProduct(p._id).unwrap();
       setView(null);
-      toast({ title: "Product deleted", text: p.name });
+      toast({ title: "Product deleted", text: p.name, severity: "success" });
     } catch {
-      toast({ title: "Could not delete product" });
+      toast({ title: "Could not delete product", severity: "error" });
     }
   };
 

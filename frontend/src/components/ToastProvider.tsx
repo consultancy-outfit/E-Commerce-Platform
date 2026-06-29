@@ -1,93 +1,159 @@
 "use client";
 
 import * as React from "react";
-import { Box, Typography } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
+import { Box, IconButton, Typography } from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
+import ErrorIcon from "@mui/icons-material/ErrorOutlineOutlined";
+import WarningIcon from "@mui/icons-material/WarningAmberOutlined";
+import InfoIcon from "@mui/icons-material/InfoOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import { AnimatePresence, motion } from "framer-motion";
 import { accents } from "@/src/lib/theme/tokens";
 
-interface ToastOptions {
+export type ToastSeverity = "success" | "error" | "warning" | "info";
+
+export interface ToastOptions {
   title: string;
   text?: string;
+  severity?: ToastSeverity;
+  actionLabel?: string;
+  onAction?: () => void;
+  duration?: number;
+}
+
+interface ToastItem extends Required<Pick<ToastOptions, "title">> {
+  id: number;
+  text?: string;
+  severity: ToastSeverity;
   actionLabel?: string;
   onAction?: () => void;
 }
 
+const SEVERITY = {
+  success: { color: accents.success, Icon: CheckCircleIcon },
+  error: { color: accents.error, Icon: ErrorIcon },
+  warning: { color: accents.warning, Icon: WarningIcon },
+  info: { color: accents.info, Icon: InfoIcon },
+} as const;
+
 const ToastContext = React.createContext<(o: ToastOptions) => void>(() => {});
 export const useToast = () => React.useContext(ToastContext);
 
-/** Bottom-centre toast matching the prototype (surface card, green check). */
+/**
+ * Top-right stacked toast notifications. Four severities with consistent icons
+ * and colours, smooth enter/exit animations, auto-dismiss + manual close.
+ * Replaces native alert()/feedback throughout the app.
+ */
 export default function ToastProvider({ children }: { children: React.ReactNode }) {
-  const [toast, setToast] = React.useState<ToastOptions | null>(null);
-  const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [toasts, setToasts] = React.useState<ToastItem[]>([]);
+  const idRef = React.useRef(0);
+  const timers = React.useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
 
-  const show = React.useCallback((o: ToastOptions) => {
-    setToast(o);
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => setToast(null), 2800);
+  const dismiss = React.useCallback((id: number) => {
+    setToasts((list) => list.filter((t) => t.id !== id));
+    const timer = timers.current.get(id);
+    if (timer) {
+      clearTimeout(timer);
+      timers.current.delete(id);
+    }
+  }, []);
+
+  const toast = React.useCallback(
+    (o: ToastOptions) => {
+      const id = ++idRef.current;
+      const item: ToastItem = {
+        id,
+        title: o.title,
+        text: o.text,
+        severity: o.severity ?? "success",
+        actionLabel: o.actionLabel,
+        onAction: o.onAction,
+      };
+      setToasts((list) => [...list, item]);
+      const timer = setTimeout(() => dismiss(id), o.duration ?? 4200);
+      timers.current.set(id, timer);
+    },
+    [dismiss],
+  );
+
+  React.useEffect(() => {
+    const map = timers.current;
+    return () => map.forEach((t) => clearTimeout(t));
   }, []);
 
   return (
-    <ToastContext.Provider value={show}>
+    <ToastContext.Provider value={toast}>
       {children}
-      <AnimatePresence>
-        {toast && (
-          <Box
-            component={motion.div}
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 14 }}
-            transition={{ duration: 0.28 }}
-            sx={{
-              position: "fixed",
-              bottom: 28,
-              left: "50%",
-              transform: "translateX(-50%)",
-              zIndex: 1400,
-              display: "flex",
-              gap: 1.4,
-              alignItems: "center",
-              bgcolor: "maison.surfaceImg",
-              border: `1px solid ${accents.success}4d`,
-              borderRadius: 2,
-              p: "14px 18px",
-              boxShadow: "0 10px 30px rgba(0,0,0,.5)",
-            }}
-          >
-            <Box
-              sx={{
-                width: 30,
-                height: 30,
-                borderRadius: "50%",
-                bgcolor: `${accents.success}24`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <CheckIcon sx={{ fontSize: 16, color: accents.success }} />
-            </Box>
-            <Box>
-              <Typography sx={{ fontWeight: 600, fontSize: 13 }}>{toast.title}</Typography>
-              {toast.text && (
-                <Typography sx={{ fontSize: 12, color: "text.secondary" }}>{toast.text}</Typography>
-              )}
-            </Box>
-            {toast.actionLabel && (
-              <Typography
-                onClick={() => {
-                  toast.onAction?.();
-                  setToast(null);
+      <Box
+        sx={{
+          position: "fixed",
+          top: { xs: 16, sm: 24 },
+          right: { xs: 16, sm: 24 },
+          left: { xs: 16, sm: "auto" },
+          zIndex: 1500,
+          display: "flex",
+          flexDirection: "column",
+          gap: 1.25,
+          pointerEvents: "none",
+        }}
+      >
+        <AnimatePresence initial={false}>
+          {toasts.map((t) => {
+            const { color, Icon } = SEVERITY[t.severity];
+            return (
+              <Box
+                key={t.id}
+                component={motion.div}
+                layout
+                initial={{ opacity: 0, x: 28, scale: 0.98 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: 28, scale: 0.98 }}
+                transition={{ duration: 0.26, ease: "easeOut" }}
+                role="status"
+                aria-live="polite"
+                sx={{
+                  pointerEvents: "auto",
+                  width: { xs: "100%", sm: 360 },
+                  maxWidth: "100%",
+                  display: "flex",
+                  gap: 1.25,
+                  alignItems: "flex-start",
+                  bgcolor: "maison.surfaceImg",
+                  border: `1px solid ${color}59`,
+                  borderLeft: `3px solid ${color}`,
+                  borderRadius: 2,
+                  p: "13px 14px",
+                  boxShadow: "0 10px 30px rgba(0,0,0,.5)",
                 }}
-                sx={{ fontSize: 12, fontWeight: 500, color: "secondary.main", cursor: "pointer", ml: 1 }}
               >
-                {toast.actionLabel}
-              </Typography>
-            )}
-          </Box>
-        )}
-      </AnimatePresence>
+                <Box sx={{ width: 30, height: 30, borderRadius: "50%", bgcolor: `${color}24`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Icon sx={{ fontSize: 18, color }} />
+                </Box>
+                <Box sx={{ flex: 1, minWidth: 0, pt: 0.25 }}>
+                  <Typography sx={{ fontWeight: 600, fontSize: 13.5 }}>{t.title}</Typography>
+                  {t.text && (
+                    <Typography sx={{ fontSize: 12.5, color: "text.secondary", mt: 0.25 }}>{t.text}</Typography>
+                  )}
+                  {t.actionLabel && (
+                    <Typography
+                      onClick={() => {
+                        t.onAction?.();
+                        dismiss(t.id);
+                      }}
+                      sx={{ fontSize: 12.5, fontWeight: 600, color: "secondary.main", cursor: "pointer", mt: 0.75, display: "inline-block" }}
+                    >
+                      {t.actionLabel}
+                    </Typography>
+                  )}
+                </Box>
+                <IconButton onClick={() => dismiss(t.id)} aria-label="Dismiss" sx={{ p: 0.25, color: "text.disabled", flexShrink: 0 }}>
+                  <CloseIcon sx={{ fontSize: 16 }} />
+                </IconButton>
+              </Box>
+            );
+          })}
+        </AnimatePresence>
+      </Box>
     </ToastContext.Provider>
   );
 }

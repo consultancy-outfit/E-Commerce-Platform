@@ -9,6 +9,7 @@ import { Box, Button, Typography, TextField } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import AuthShell from "@/src/features/auth/AuthShell";
 import PortalToggle, { type Portal } from "@/src/features/auth/PortalToggle";
+import { useToast } from "@/src/components/ToastProvider";
 import { loginSchema, type LoginValues } from "@/src/schemas/auth";
 import { useLoginMutation } from "@/src/features/auth/authApi";
 import { useAppDispatch } from "@/src/lib/hooks";
@@ -23,6 +24,7 @@ const DEMO: Record<Portal, LoginValues> = {
 export default function LoginPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const toast = useToast();
   const [portal, setPortal] = React.useState<Portal>("customer");
   const [serverError, setServerError] = React.useState<string | null>(null);
   const [login, { isLoading }] = useLoginMutation();
@@ -45,12 +47,15 @@ export default function LoginPage() {
     try {
       const res = await login(values).unwrap();
       dispatch(setCredentials({ token: res.accessToken, user: res.user }));
+      toast({ title: `Welcome back, ${res.user.firstName}`, severity: "success" });
       // Customers land on the home/landing page; admins on their dashboard.
       router.push(res.user.role === "admin" ? "/admin" : "/");
     } catch (err) {
       const e = err as { data?: { message?: string | string[] } };
       const msg = e.data?.message;
-      setServerError(Array.isArray(msg) ? msg[0] : msg || "Unable to sign in");
+      const text = Array.isArray(msg) ? msg[0] : msg || "Unable to sign in";
+      setServerError(text);
+      toast({ title: "Sign in failed", text, severity: "error" });
     }
   };
 

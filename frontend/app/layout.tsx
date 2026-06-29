@@ -3,6 +3,7 @@ import { Marcellus, Hanken_Grotesk } from "next/font/google";
 import ThemeRegistry from "@/src/lib/theme/ThemeRegistry";
 import StoreProvider from "@/src/lib/StoreProvider";
 import ToastProvider from "@/src/components/ToastProvider";
+import ConfirmProvider from "@/src/components/ConfirmProvider";
 import "./globals.css";
 
 const marcellus = Marcellus({
@@ -36,7 +37,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <StoreProvider>
           <ThemeRegistry>
-            <ToastProvider>{children}</ToastProvider>
+            <ToastProvider>
+              <ConfirmProvider>{children}</ConfirmProvider>
+            </ToastProvider>
           </ThemeRegistry>
         </StoreProvider>
       </body>

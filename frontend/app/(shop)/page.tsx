@@ -58,11 +58,11 @@ export default function LandingPage() {
 
   const subscribe = () => {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast({ title: "Enter a valid email", text: "Please check your address and try again." });
+      toast({ title: "Enter a valid email", text: "Please check your address and try again.", severity: "error" });
       return;
     }
     setEmail("");
-    toast({ title: "You're on the list", text: "Welcome to Maison — watch your inbox for early access." });
+    toast({ title: "You're on the list", text: "Welcome to Maison — watch your inbox for early access.", severity: "success" });
   };
 
   return (

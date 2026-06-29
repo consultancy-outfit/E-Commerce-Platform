@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import Protected from "@/src/components/Protected";
 import StatusBadge from "@/src/components/StatusBadge";
+import { useToast } from "@/src/components/ToastProvider";
 import { imageUrl } from "@/src/lib/api/baseApi";
 import { gbp } from "@/src/lib/format";
 import { useAppSelector } from "@/src/lib/hooks";
@@ -16,6 +17,7 @@ import { checkoutSchema, type CheckoutValues } from "@/src/schemas/checkout";
 
 function CheckoutInner() {
   const router = useRouter();
+  const toast = useToast();
   const user = useAppSelector((s) => s.auth.user);
   const { data: cart } = useGetCartQuery();
   const [checkout, { isLoading }] = useCheckoutMutation();
@@ -43,11 +45,14 @@ function CheckoutInner() {
       const order = await checkout({
         shippingAddress: { firstName: v.firstName, lastName: v.lastName, line1: v.line1, city: v.city, postcode: v.postcode },
       }).unwrap();
+      toast({ title: "Order placed", text: "Thank you — your order is confirmed.", severity: "success" });
       router.push(`/confirmation?id=${order._id}`);
     } catch (err) {
       const e = err as { data?: { message?: string | string[] } };
       const msg = e.data?.message;
-      setServerError(Array.isArray(msg) ? msg[0] : msg || "Checkout failed");
+      const text = Array.isArray(msg) ? msg[0] : msg || "Checkout failed";
+      setServerError(text);
+      toast({ title: "Checkout failed", text, severity: "error" });
     }
   };
 

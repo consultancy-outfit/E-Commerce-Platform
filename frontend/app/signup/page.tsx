@@ -10,6 +10,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import AuthShell from "@/src/features/auth/AuthShell";
 import PortalToggle, { type Portal } from "@/src/features/auth/PortalToggle";
+import { useToast } from "@/src/components/ToastProvider";
 import { signupSchema, type SignupValues } from "@/src/schemas/auth";
 import { useSignupMutation } from "@/src/features/auth/authApi";
 import { useAppDispatch } from "@/src/lib/hooks";
@@ -18,6 +19,7 @@ import { setCredentials } from "@/src/features/auth/authSlice";
 export default function SignupPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const toast = useToast();
   const [portal, setPortal] = React.useState<Portal>("customer");
   const [serverError, setServerError] = React.useState<string | null>(null);
   const [signup, { isLoading }] = useSignupMutation();
@@ -42,11 +44,14 @@ export default function SignupPage() {
         password: values.password,
       }).unwrap();
       dispatch(setCredentials({ token: res.accessToken, user: res.user }));
+      toast({ title: "Account created", text: `Welcome to Maison, ${res.user.firstName}`, severity: "success" });
       router.push("/");
     } catch (err) {
       const e = err as { data?: { message?: string | string[] } };
       const msg = e.data?.message;
-      setServerError(Array.isArray(msg) ? msg[0] : msg || "Unable to create account");
+      const text = Array.isArray(msg) ? msg[0] : msg || "Unable to create account";
+      setServerError(text);
+      toast({ title: "Couldn't create account", text, severity: "error" });
     }
   };
 

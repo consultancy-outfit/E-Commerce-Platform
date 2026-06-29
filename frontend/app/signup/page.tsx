@@ -40,7 +40,7 @@ export default function SignupPage() {
         password: values.password,
       }).unwrap();
       dispatch(setCredentials({ token: res.accessToken, user: res.user }));
-      router.push("/catalog");
+      router.push("/");
     } catch (err) {
       const e = err as { data?: { message?: string | string[] } };
       const msg = e.data?.message;

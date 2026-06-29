@@ -1,14 +1,17 @@
 "use client";
 
+import * as React from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { Badge, Box, IconButton } from "@mui/material";
+import { Badge, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLongOutlined";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBagOutlined";
+import LogoutIcon from "@mui/icons-material/LogoutOutlined";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
-import { useAppSelector } from "@/src/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/src/lib/hooks";
 import { useGetCartQuery } from "@/src/features/cart/cartApi";
+import { logout } from "@/src/features/auth/authSlice";
 
 const NAV: Array<{ label: string; category?: string }> = [
   { label: "New In" },
@@ -19,10 +22,30 @@ const NAV: Array<{ label: string; category?: string }> = [
 
 export default function StorefrontHeader() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const pathname = usePathname();
   const params = useSearchParams();
   const token = useAppSelector((s) => s.auth.token);
   const activeCat = params.get("category");
+
+  // Profile dropdown (only for signed-in users; guests go straight to login).
+  const [menuAnchor, setMenuAnchor] = React.useState<null | HTMLElement>(null);
+  const menuOpen = Boolean(menuAnchor);
+
+  const onProfileClick = (e: React.MouseEvent<HTMLElement>) => {
+    if (token) setMenuAnchor(e.currentTarget);
+    else router.push("/login");
+  };
+  const closeMenu = () => setMenuAnchor(null);
+  const goOrders = () => {
+    closeMenu();
+    router.push("/orders");
+  };
+  const signOut = () => {
+    closeMenu();
+    dispatch(logout());
+    router.push("/login");
+  };
 
   // Only fetch the cart (and its count) when signed in.
   const { data: cart } = useGetCartQuery(undefined, { skip: !token });
@@ -75,12 +98,46 @@ export default function StorefrontHeader() {
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
         <ThemeToggle />
         <IconButton
-          onClick={() => router.push(token ? "/orders" : "/login")}
+          onClick={onProfileClick}
           sx={{ color: "text.secondary" }}
           aria-label="Account"
+          aria-haspopup={token ? "menu" : undefined}
+          aria-expanded={menuOpen ? "true" : undefined}
         >
           <PersonOutlineIcon sx={{ fontSize: 20 }} />
         </IconButton>
+        <Menu
+          anchorEl={menuAnchor}
+          open={menuOpen}
+          onClose={closeMenu}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          transformOrigin={{ vertical: "top", horizontal: "right" }}
+          slotProps={{
+            paper: {
+              sx: {
+                mt: 1,
+                minWidth: 180,
+                border: "1px solid",
+                borderColor: "maison.line.l12",
+                borderRadius: 1.5,
+              },
+            },
+          }}
+        >
+          <MenuItem onClick={goOrders} sx={{ fontSize: 14, py: 1.1 }}>
+            <ListItemIcon sx={{ color: "text.secondary", minWidth: 32 }}>
+              <ReceiptLongIcon sx={{ fontSize: 18 }} />
+            </ListItemIcon>
+            My Orders
+          </MenuItem>
+          <Divider sx={{ borderColor: "maison.line.l08" }} />
+          <MenuItem onClick={signOut} sx={{ fontSize: 14, py: 1.1, color: "secondary.main" }}>
+            <ListItemIcon sx={{ color: "secondary.main", minWidth: 32 }}>
+              <LogoutIcon sx={{ fontSize: 18 }} />
+            </ListItemIcon>
+            Logout
+          </MenuItem>
+        </Menu>
         <IconButton onClick={() => router.push("/orders")} sx={{ color: "text.secondary" }} aria-label="Orders">
           <ReceiptLongIcon sx={{ fontSize: 20 }} />
         </IconButton>

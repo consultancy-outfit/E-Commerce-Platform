@@ -47,7 +47,8 @@ export default function LoginPage() {
     try {
       const res = await login(values).unwrap();
       dispatch(setCredentials({ token: res.accessToken, user: res.user }));
-      router.push(res.user.role === "admin" ? "/admin" : "/catalog");
+      // Customers land on the home/landing page; admins on their dashboard.
+      router.push(res.user.role === "admin" ? "/admin" : "/");
     } catch (err) {
       const e = err as { data?: { message?: string | string[] } };
       const msg = e.data?.message;

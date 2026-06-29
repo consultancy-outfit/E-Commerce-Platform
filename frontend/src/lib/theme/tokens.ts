@@ -70,29 +70,32 @@ const dark: MaisonTokens = {
   },
 };
 
+// Light theme: a soft warm-beige / light-brown palette — warmer and less
+// glaring than stark white, with espresso text for strong contrast.
 const light: MaisonTokens = {
-  bg: "#FAF9F5",
-  bgDeep: "#F1EEE6",
-  surface: "#FFFFFF",
-  surface2: "#F3F1EA",
-  surfaceImg: "#ECEAE1",
-  track: "#D8D4CB",
-  heroA: "#F1ECE2",
-  heroB: "#E8E2D6",
-  headerBg: "rgba(250,249,245,.9)",
-  text: "#1C1A16",
-  text2: "#46423A",
-  textMuted: "#736E64",
-  textFaint: "#9A948A",
+  bg: "#F0E9DA", // warm beige page background
+  bgDeep: "#E7DCC8", // deeper beige for sidebar / sunken sections / table headers
+  surface: "#FBF6EC", // warm ivory cards / paper / modals / dropdowns
+  surface2: "#EFE7D6", // input fills / secondary surfaces (sits below surface)
+  surfaceImg: "#E5DAC4", // image placeholders / toast & toggle surface
+  track: "#D6C9AE", // scrollbar & slider track
+  heroA: "#EFE3CE", // hero / brand-panel gradient (warm)
+  heroB: "#E6D8BE",
+  headerBg: "rgba(240,233,218,.9)", // translucent sticky header (matches bg)
+  text: "#241C12", // espresso — high contrast on beige
+  text2: "#4F4536",
+  textMuted: "#847459",
+  textFaint: "#A99A80",
+  // Hairline borders in warm brown.
   line: {
-    l06: "rgba(28,26,18,.07)",
-    l08: "rgba(28,26,18,.1)",
-    l10: "rgba(28,26,18,.12)",
-    l12: "rgba(28,26,18,.14)",
-    l14: "rgba(28,26,18,.16)",
-    l16: "rgba(28,26,18,.2)",
-    l18: "rgba(28,26,18,.22)",
-    l30: "rgba(28,26,18,.3)",
+    l06: "rgba(74,54,24,.08)",
+    l08: "rgba(74,54,24,.11)",
+    l10: "rgba(74,54,24,.14)",
+    l12: "rgba(74,54,24,.16)",
+    l14: "rgba(74,54,24,.18)",
+    l16: "rgba(74,54,24,.22)",
+    l18: "rgba(74,54,24,.26)",
+    l30: "rgba(74,54,24,.34)",
   },
 };
 

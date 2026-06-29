@@ -1,0 +1,2653 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<x-dc>
+<helmet>
+<style id="maison-theme">
+:root{--bg:#0C0C0E;--bg-deep:#0a0a0c;--surface:#121215;--surface-2:#1A1A1E;--surface-img:#16141a;--track:#26262C;--hero-a:#1a1418;--hero-b:#0f0e12;--header-bg:rgba(12,12,14,.92);--text:#F4F0E9;--text-2:#CFCAC1;--text-muted:#8B867D;--text-faint:#6B6B72;--line-06:rgba(244,240,233,.06);--line-08:rgba(244,240,233,.08);--line-10:rgba(244,240,233,.1);--line-12:rgba(244,240,233,.12);--line-14:rgba(244,240,233,.14);--line-16:rgba(244,240,233,.16);--line-18:rgba(244,240,233,.18);--line-30:rgba(244,240,233,.3);}
+[data-theme="light"]{--bg:#FAF9F5;--bg-deep:#F1EEE6;--surface:#FFFFFF;--surface-2:#F3F1EA;--surface-img:#ECEAE1;--track:#D8D4CB;--hero-a:#F1ECE2;--hero-b:#E8E2D6;--header-bg:rgba(250,249,245,.9);--text:#1C1A16;--text-2:#46423A;--text-muted:#736E64;--text-faint:#9A948A;--line-06:rgba(28,26,18,.07);--line-08:rgba(28,26,18,.1);--line-10:rgba(28,26,18,.12);--line-12:rgba(28,26,18,.14);--line-14:rgba(28,26,18,.16);--line-16:rgba(28,26,18,.2);--line-18:rgba(28,26,18,.22);--line-30:rgba(28,26,18,.3);}
+[data-theme="light"] svg[stroke="#CFCAC1"], [data-theme="light"] svg[stroke="#CFCAC1"] *{stroke:#46423A}
+[data-theme="light"] svg[stroke="#8B867D"], [data-theme="light"] svg[stroke="#8B867D"] *{stroke:#6F6A60}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
+<style>
+  @keyframes mzspin { to { transform: rotate(360deg) } }
+  @keyframes mztoast { from { opacity:0; transform:translateY(14px) } to { opacity:1; transform:translateY(0) } }
+  ::-webkit-scrollbar { width:10px; height:10px } ::-webkit-scrollbar-thumb { background:var(--track); border-radius:6px } ::-webkit-scrollbar-track { background:transparent }
+</style>
+</helmet>
+<div data-theme="{{ theme }}" style="min-height:100vh;background:var(--bg);font-family:'Hanken Grotesk',sans-serif;color:var(--text)">
+
+<!-- ===== LOGIN ===== -->
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px;background:radial-gradient(100% 60% at 50% 0%,rgba(200,32,63,.16),rgba(200,32,63,0) 55%)">
+    <span onclick="{{ toggleTheme }}" title="Toggle theme" style="position:fixed;top:22px;right:26px;z-index:30;cursor:pointer;display:flex;align-items:center;color:var(--text-2)"><sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"></path></svg></sc-if><sc-if value="{{ isLight }}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg></sc-if></span>
+    <div style="width:420px;max-width:100%">
+      <div style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:44px"><div style="width:36px;height:36px;border:1px solid #C9A24B;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#C9A24B;font:500 17px 'Marcellus'">M</div><span style="font:600 13px 'Hanken Grotesk';letter-spacing:.34em;color:var(--text)">MAISON</span></div>
+      <div style="display:flex;background:var(--surface-img);border:1px solid var(--line-14);border-radius:6px;padding:4px;margin-bottom:30px">
+        <div onclick="{{ selCustomer }}" style="{{ tabCustomer }}">Customer Portal</div>
+        <div onclick="{{ selAdmin }}" style="{{ tabAdmin }}">Admin Portal</div>
+      </div>
+      <div style="font:400 34px 'Marcellus';color:var(--text);margin-bottom:6px;text-align:center">{{ loginTitle }}</div>
+      <div style="font:400 14px 'Hanken Grotesk';color:var(--text-muted);text-align:center;margin-bottom:34px">{{ loginSubtitle }}</div>
+      <div style="font:500 12px 'Hanken Grotesk';color:var(--text-2);margin-bottom:7px">Email</div>
+      <input value="{{ loginEmail }}" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:13px;font:400 14px 'Hanken Grotesk';color:var(--text);margin-bottom:16px;outline:none">
+      <div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font:500 12px 'Hanken Grotesk';color:var(--text-2)">Password</span><span style="font:500 12px 'Hanken Grotesk';color:#C9A24B;cursor:pointer">Forgot?</span></div>
+      <input type="password" value="password" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:13px;font:400 14px 'Hanken Grotesk';color:var(--text);margin-bottom:24px;outline:none">
+      <button onclick="{{ signIn }}" style="width:100%;font:600 15px 'Hanken Grotesk';color:#fff;background:#C8203F;border:none;border-radius:4px;padding:14px;cursor:pointer;margin-bottom:18px">{{ signInLabel }}</button>
+      <sc-if value="{{ portalCustomer }}" hint-placeholder-val="{{ true }}">
+        <div style="text-align:center;font:400 14px 'Hanken Grotesk';color:var(--text-muted)">New here? <span onclick="{{ goSignup }}" style="color:#C9A24B;font-weight:600;cursor:pointer">Create an account</span></div>
+        <div style="text-align:center;font:400 13px 'Hanken Grotesk';color:var(--text-faint);margin-top:10px">or <span onclick="{{ goCatalog }}" style="color:var(--text-2);cursor:pointer;text-decoration:underline">browse as guest</span></div>
+      </sc-if>
+      <sc-if value="{{ portalAdmin }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;justify-content:center;gap:7px;font:400 13px 'Hanken Grotesk';color:var(--text-faint)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B6B72" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>Authorised personnel only</div>
+      </sc-if>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ===== SIGN UP ===== -->
+<sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px;background:radial-gradient(100% 60% at 50% 0%,rgba(200,32,63,.16),rgba(200,32,63,0) 55%)">
+    <span onclick="{{ toggleTheme }}" title="Toggle theme" style="position:fixed;top:22px;right:26px;z-index:30;cursor:pointer;display:flex;align-items:center;color:var(--text-2)"><sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"></path></svg></sc-if><sc-if value="{{ isLight }}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg></sc-if></span>
+    <div style="width:440px;max-width:100%">
+      <div onclick="{{ goLogin }}" style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:40px;cursor:pointer"><div style="width:36px;height:36px;border:1px solid #C9A24B;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#C9A24B;font:500 17px 'Marcellus'">M</div><span style="font:600 13px 'Hanken Grotesk';letter-spacing:.34em;color:var(--text)">MAISON</span></div>
+      <div style="font:400 34px 'Marcellus';color:var(--text);margin-bottom:6px;text-align:center">Create your account</div>
+      <div style="font:400 14px 'Hanken Grotesk';color:var(--text-muted);text-align:center;margin-bottom:34px">Join Maison for early access to new arrivals &amp; private sales</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+        <div><div style="font:500 12px 'Hanken Grotesk';color:var(--text-2);margin-bottom:7px">First name</div><input placeholder="Elise" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none"></div>
+        <div><div style="font:500 12px 'Hanken Grotesk';color:var(--text-2);margin-bottom:7px">Last name</div><input placeholder="Moreau" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none"></div>
+      </div>
+      <div style="font:500 12px 'Hanken Grotesk';color:var(--text-2);margin-bottom:7px">Email</div>
+      <input placeholder="you@example.com" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:13px;font:400 14px 'Hanken Grotesk';color:var(--text);margin-bottom:16px;outline:none">
+      <div style="font:500 12px 'Hanken Grotesk';color:var(--text-2);margin-bottom:7px">Password</div>
+      <input type="password" placeholder="At least 8 characters" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:13px;font:400 14px 'Hanken Grotesk';color:var(--text);margin-bottom:18px;outline:none">
+      <div onclick="{{ toggleAgree }}" style="display:flex;align-items:flex-start;gap:10px;margin-bottom:24px;cursor:pointer">
+        <div style="{{ agreeBoxStyle }}"><sc-if value="{{ agree }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0C0C0E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"></path></svg></sc-if></div>
+        <span style="font:400 13px/1.5 'Hanken Grotesk';color:var(--text-muted)">I agree to Maison's <span style="color:#C9A24B">Terms of Service</span> and <span style="color:#C9A24B">Privacy Policy</span>.</span>
+      </div>
+      <button onclick="{{ goCatalog }}" style="width:100%;font:600 15px 'Hanken Grotesk';color:#fff;background:#C8203F;border:none;border-radius:4px;padding:14px;cursor:pointer;margin-bottom:18px">Create account</button>
+      <div style="text-align:center;font:400 14px 'Hanken Grotesk';color:var(--text-muted)">Already have an account? <span onclick="{{ goLogin }}" style="color:#C9A24B;font-weight:600;cursor:pointer">Sign in</span></div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ===== STOREFRONT ===== -->
+<sc-if value="{{ inStore }}" hint-placeholder-val="{{ true }}">
+  <div>
+    <!-- header -->
+    <div style="position:sticky;top:0;z-index:20;height:70px;background:var(--header-bg);backdrop-filter:blur(8px);border-bottom:1px solid var(--line-08);display:flex;align-items:center;justify-content:space-between;padding:0 40px">
+      <div style="display:flex;align-items:center;gap:36px">
+        <div onclick="{{ goCatalog }}" style="display:flex;align-items:center;gap:10px;cursor:pointer"><div style="width:30px;height:30px;border:1px solid #C9A24B;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#C9A24B;font:500 15px 'Marcellus'">M</div><span style="font:600 12px 'Hanken Grotesk';letter-spacing:.32em;color:var(--text)">MAISON</span></div>
+        <div style="display:flex;gap:24px;font:500 14px 'Hanken Grotesk';color:var(--text-2)"><span onclick="{{ goNewIn }}" style="{{ navNewIn }}">New In</span><span onclick="{{ goDresses }}" style="{{ navDresses }}">Dresses</span><span onclick="{{ goOuterwear }}" style="{{ navOuterwear }}">Outerwear</span><span onclick="{{ goKnitwear }}" style="{{ navKnitwear }}">Knitwear</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px">
+        <span onclick="{{ toggleTheme }}" title="Toggle theme" style="cursor:pointer;display:flex;align-items:center;color:var(--text-2)"><sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"></path></svg></sc-if><sc-if value="{{ isLight }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg></sc-if></span>
+        <svg onclick="{{ goLogin }}" style="cursor:pointer" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CFCAC1" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 4-6 8-6s8 2 8 6"></path></svg>
+        <svg onclick="{{ goOrders }}" style="cursor:pointer" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CFCAC1" stroke-width="1.5" stroke-linecap="round"><path d="M6 2h9l5 5v15H6z"></path><path d="M9 12h7M9 16h7"></path></svg>
+        <div onclick="{{ goCart }}" style="position:relative;cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CFCAC1" stroke-width="1.5" stroke-linecap="round"><path d="M6 6h15l-1.5 9h-12z"></path><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle><path d="M6 6L5 3H3"></path></svg><sc-if value="{{ cartHasItems }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-7px;right:-8px;font:600 10px 'Hanken Grotesk';color:#fff;background:#C8203F;border-radius:999px;min-width:17px;height:17px;display:flex;align-items:center;justify-content:center;padding:0 4px">{{ cartCount }}</span></sc-if></div>
+      </div>
+    </div>
+
+    <!-- CATALOG -->
+    <sc-if value="{{ isCatalog }}" hint-placeholder-val="{{ true }}">
+      <div>
+        <div style="height:240px;background:radial-gradient(120% 140% at 78% 20%, rgba(200,32,63,.28), rgba(200,32,63,0) 55%),linear-gradient(120deg,var(--hero-a),var(--hero-b));display:flex;flex-direction:column;justify-content:center;padding:0 56px;border-bottom:1px solid var(--line-08)">
+          <div style="font:500 11px 'Hanken Grotesk';letter-spacing:.3em;text-transform:uppercase;color:#C9A24B;margin-bottom:12px">Autumn / Winter '26</div>
+          <div style="font:400 50px/1 'Marcellus';color:var(--text);margin-bottom:12px">The New Arrivals</div>
+          <div style="font:400 15px 'Hanken Grotesk';color:var(--text-2);max-width:440px">Considered tailoring and fluid silhouettes, made to last beyond the season.</div>
+        </div>
+        <div style="display:flex;padding:34px 40px 60px;gap:36px;max-width:1440px;margin:0 auto">
+          <div style="width:220px;flex-shrink:0">
+            <div style="font:600 11px 'Hanken Grotesk';letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px">Category</div>
+            <div style="display:flex;flex-direction:column;gap:11px;font:500 14px 'Hanken Grotesk';margin-bottom:30px">
+              <sc-for list="{{ categories }}" as="c" hint-placeholder-count="5"><div onclick="{{ c.choose }}" style="{{ c.style }}">{{ c.label }}<span style="color:var(--text-faint)">{{ c.count }}</span></div></sc-for>
+            </div>
+            <div style="font:600 11px 'Hanken Grotesk';letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px">Price</div>
+            <div style="height:3px;background:var(--track);border-radius:2px;position:relative;margin:18px 4px 12px;touch-action:none"><div style="{{ priceBarStyle }}"></div><div onmousedown="{{ onDragMin }}" ontouchstart="{{ onDragMin }}" style="{{ priceMinHandle }}"></div><div onmousedown="{{ onDragMax }}" ontouchstart="{{ onDragMax }}" style="{{ priceMaxHandle }}"></div></div>
+            <div style="display:flex;justify-content:space-between;font:500 13px 'Hanken Grotesk';color:var(--text-2)"><span>{{ priceMinLabel }}</span><span>{{ priceMaxLabel }}</span></div>
+          </div>
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;gap:16px">
+              <div style="display:flex;align-items:center;gap:16px">
+                <span style="font:400 14px 'Hanken Grotesk';color:var(--text-muted);white-space:nowrap">{{ productCountLabel }}</span>
+                <div style="display:flex;align-items:center;gap:9px;background:var(--surface-2);border:1px solid var(--line-12);border-radius:4px;padding:8px 12px;width:230px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8B867D" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4-4"></path></svg><input value="{{ search }}" onChange="{{ onSearch }}" placeholder="Search products" style="flex:1;min-width:0;background:transparent;border:none;outline:none;font:400 13px 'Hanken Grotesk';color:var(--text)"></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font:500 13px 'Hanken Grotesk';color:var(--text-2);position:relative"><span style="color:var(--text-muted)">Sort</span><div onclick="{{ toggleSort }}" style="background:var(--surface-2);border:1px solid var(--line-12);border-radius:4px;padding:8px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;white-space:nowrap">{{ sortLabel }}<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B867D" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg></div><sc-if value="{{ sortOpen }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;top:42px;right:0;z-index:30;background:var(--surface);border:1px solid var(--line-12);border-radius:6px;box-shadow:0 12px 30px rgba(0,0,0,.3);overflow:hidden;min-width:180px"><sc-for list="{{ sortOptions }}" as="o" hint-placeholder-count="3"><div onclick="{{ o.choose }}" style="{{ o.style }}">{{ o.label }}</div></sc-for></div></sc-if></div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
+              <sc-for list="{{ products }}" as="p" hint-placeholder-count="8">
+                <div onclick="{{ p.open }}" style="cursor:pointer">
+                  <div style="aspect-ratio:3/4;border-radius:6px;overflow:hidden;background:var(--surface-img);margin-bottom:12px;position:relative"><img src="{{ p.img }}" style="width:100%;height:100%;object-fit:cover;display:block"><sc-if value="{{ p.hasTag }}" hint-placeholder-val="{{ false }}"><span style="{{ p.tagStyle }}">{{ p.tag }}</span></sc-if></div>
+                  <div style="font:500 11px 'Hanken Grotesk';letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px">{{ p.cat }}</div>
+                  <div style="font:400 16px 'Marcellus';color:var(--text);margin-bottom:5px">{{ p.name }}</div>
+                  <div style="font:600 14px 'Hanken Grotesk';color:var(--text)">{{ p.priceLabel }}</div>
+                  <div style="{{ p.stockStyle }}">{{ p.stockLabel }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ hasPages }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-top:36px">
+                <div onclick="{{ prevPage }}" style="{{ prevStyle }}">Prev</div>
+                <sc-for list="{{ pageBtns }}" as="pg" hint-placeholder-count="3"><div onclick="{{ pg.choose }}" style="{{ pg.style }}">{{ pg.n }}</div></sc-for>
+                <div onclick="{{ nextPage }}" style="{{ nextStyle }}">Next</div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- PRODUCT DETAIL -->
+    <sc-if value="{{ isProduct }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:1440px;margin:0 auto">
+        <div style="padding:20px 40px;font:400 13px 'Hanken Grotesk';color:var(--text-muted)"><span onclick="{{ goCatalog }}" style="cursor:pointer">Home</span> / {{ sel.cat }} / <span style="color:var(--text-2)">{{ sel.name }}</span></div>
+        <div style="display:flex;gap:48px;padding:8px 40px 56px">
+          <div style="flex:1;aspect-ratio:4/5;border-radius:8px;overflow:hidden;background:var(--surface-img)"><img src="{{ sel.imgLarge }}" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+          <div style="width:440px;flex-shrink:0">
+            <div style="font:500 11px 'Hanken Grotesk';letter-spacing:.14em;text-transform:uppercase;color:#C9A24B;margin-bottom:10px">{{ sel.cat }}</div>
+            <div style="font:400 38px/1.05 'Marcellus';color:var(--text);margin-bottom:14px">{{ sel.name }}</div>
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px"><span style="font:400 24px 'Hanken Grotesk';color:var(--text)">{{ sel.priceLabel }}</span><span style="font:500 12px 'Hanken Grotesk';color:#4FA77E;background:rgba(79,167,126,.12);border:1px solid rgba(79,167,126,.3);border-radius:999px;padding:4px 10px">In stock</span></div>
+            <div style="font:400 15px/1.7 'Hanken Grotesk';color:var(--text-2);margin-bottom:26px">{{ sel.desc }}</div>
+            <div style="font:600 11px 'Hanken Grotesk';letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:11px">Size</div>
+            <div style="display:flex;gap:9px;margin-bottom:28px"><sc-for list="{{ sizes }}" as="s" hint-placeholder-count="4"><span onclick="{{ s.choose }}" style="{{ s.style }}">{{ s.label }}</span></sc-for></div>
+            <div style="display:flex;gap:12px;margin-bottom:18px">
+              <div style="display:inline-flex;align-items:center;border:1px solid var(--line-18);border-radius:4px;overflow:hidden"><button onclick="{{ decQty }}" style="width:46px;height:52px;background:var(--surface-2);border:none;color:var(--text-2);font-size:20px;cursor:pointer">−</button><div style="width:50px;text-align:center;font:600 16px 'Hanken Grotesk';color:var(--text)">{{ qty }}</div><button onclick="{{ incQty }}" style="width:46px;height:52px;background:var(--surface-2);border:none;color:var(--text-2);font-size:20px;cursor:pointer">+</button></div>
+              <button onclick="{{ addToCart }}" style="flex:1;font:600 15px 'Hanken Grotesk';color:#fff;background:#C8203F;border:none;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><path d="M6 6h15l-1.5 9h-12z"></path><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle><path d="M6 6L5 3H3"></path></svg>Add to cart</button>
+            </div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--line-08);padding:36px 40px 56px;background:var(--bg-deep)">
+          <div style="font:400 26px 'Marcellus';color:var(--text);margin-bottom:4px">Recommended for you</div>
+          <div style="font:400 13px 'Hanken Grotesk';color:var(--text-muted);margin-bottom:24px">Same category &amp; price band, weighted by what you've browsed.</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
+            <sc-for list="{{ recommended }}" as="p" hint-placeholder-count="4">
+              <div onclick="{{ p.open }}" style="cursor:pointer"><div style="aspect-ratio:3/4;border-radius:6px;overflow:hidden;background:var(--surface-img);margin-bottom:11px"><img src="{{ p.img }}" style="width:100%;height:100%;object-fit:cover;display:block"></div><div style="font:400 15px 'Marcellus';color:var(--text);margin-bottom:4px">{{ p.name }}</div><div style="font:600 14px 'Hanken Grotesk';color:var(--text)">{{ p.priceLabel }}</div></div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- CART -->
+    <sc-if value="{{ isCart }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:1200px;margin:0 auto;padding:40px">
+        <sc-if value="{{ cartHasItems }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;gap:48px">
+            <div style="flex:1">
+              <div style="font:400 34px 'Marcellus';color:var(--text);margin-bottom:6px">Your bag</div>
+              <div style="font:400 14px 'Hanken Grotesk';color:var(--text-muted);margin-bottom:28px">{{ cartCountLabel }}</div>
+              <sc-for list="{{ cart }}" as="i" hint-placeholder-count="2">
+                <div style="display:flex;gap:20px;padding-bottom:24px;border-bottom:1px solid var(--line-08);margin-bottom:24px">
+                  <div style="width:96px;height:120px;border-radius:6px;overflow:hidden;background:var(--surface-img);flex-shrink:0"><img src="{{ i.img }}" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+                  <div style="flex:1"><div style="font:400 18px 'Marcellus';color:var(--text);margin-bottom:5px">{{ i.name }}</div><div style="font:400 13px 'Hanken Grotesk';color:var(--text-muted);margin-bottom:16px">{{ i.meta }}</div><div style="display:inline-flex;align-items:center;border:1px solid var(--line-18);border-radius:4px;overflow:hidden"><button onclick="{{ i.dec }}" style="width:34px;height:36px;background:var(--surface-2);border:none;color:var(--text-2);cursor:pointer">−</button><div style="width:40px;text-align:center;font:600 14px 'Hanken Grotesk';color:var(--text)">{{ i.qty }}</div><button onclick="{{ i.inc }}" style="width:34px;height:36px;background:var(--surface-2);border:none;color:var(--text-2);cursor:pointer">+</button></div></div>
+                  <div style="text-align:right"><div style="font:600 16px 'Hanken Grotesk';color:var(--text);margin-bottom:14px">{{ i.lineLabel }}</div><span onclick="{{ i.remove }}" style="font:500 12px 'Hanken Grotesk';color:var(--text-muted);text-decoration:underline;cursor:pointer">Remove</span></div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="width:360px;flex-shrink:0">
+              <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:26px">
+                <div style="font:400 20px 'Marcellus';color:var(--text);margin-bottom:20px">Order summary</div>
+                <div style="display:flex;justify-content:space-between;font:400 14px 'Hanken Grotesk';color:var(--text-2);margin-bottom:12px"><span>Subtotal</span><span>{{ subtotalLabel }}</span></div>
+                <div style="display:flex;justify-content:space-between;font:400 14px 'Hanken Grotesk';color:var(--text-2);margin-bottom:12px"><span>Shipping</span><span style="color:#4FA77E">Free</span></div>
+                <div style="display:flex;justify-content:space-between;font:400 14px 'Hanken Grotesk';color:var(--text-2);margin-bottom:18px"><span>Estimated tax</span><span>{{ taxLabel }}</span></div>
+                <div style="height:1px;background:var(--line-10);margin-bottom:18px"></div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:22px"><span style="font:500 15px 'Hanken Grotesk';color:var(--text)">Total</span><span style="font:400 26px 'Marcellus';color:var(--text)">{{ totalLabel }}</span></div>
+                <button onclick="{{ goCheckout }}" style="width:100%;font:600 15px 'Hanken Grotesk';color:#fff;background:#C8203F;border:none;border-radius:4px;padding:15px;cursor:pointer;margin-bottom:12px">Proceed to checkout</button>
+                <div onclick="{{ goCatalog }}" style="text-align:center;font:500 13px 'Hanken Grotesk';color:var(--text-muted);cursor:pointer">Continue shopping</div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 20px">
+            <div style="width:64px;height:64px;border-radius:50%;background:var(--surface-img);border:1px solid var(--line-10);display:flex;align-items:center;justify-content:center;margin-bottom:22px"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8B867D" stroke-width="1.4" stroke-linecap="round"><path d="M6 6h15l-1.5 9h-12z"></path><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle><path d="M6 6L5 3H3"></path></svg></div>
+            <div style="font:400 24px 'Marcellus';color:var(--text);margin-bottom:8px">Your bag is empty</div>
+            <div style="font:400 14px 'Hanken Grotesk';color:var(--text-muted);margin-bottom:24px">Explore new arrivals to get started.</div>
+            <button onclick="{{ goCatalog }}" style="font:600 14px 'Hanken Grotesk';color:#fff;background:#C8203F;border:none;border-radius:4px;padding:12px 24px;cursor:pointer">Browse the collection</button>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- CHECKOUT -->
+    <sc-if value="{{ isCheckout }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:1200px;margin:0 auto;padding:36px 40px">
+        <div style="display:flex;align-items:center;gap:10px;font:400 13px 'Hanken Grotesk';color:var(--text-muted);margin-bottom:28px"><span onclick="{{ goCart }}" style="color:#C9A24B;cursor:pointer">Cart</span><span>›</span><span style="color:var(--text);font-weight:600">Checkout</span><span>›</span><span>Confirmation</span></div>
+        <div style="display:flex;gap:48px">
+          <div style="flex:1">
+            <div style="font:400 20px 'Marcellus';color:var(--text);margin-bottom:16px">Contact</div>
+            <input value="elise.moreau@gmail.com" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);margin-bottom:30px;outline:none">
+            <div style="font:400 20px 'Marcellus';color:var(--text);margin-bottom:16px">Shipping address</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:30px">
+              <input value="Elise" style="background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none">
+              <input value="Moreau" style="background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none">
+              <input value="14 Rue des Archives" style="grid-column:1/3;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none">
+              <input value="Paris" style="background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none">
+              <input value="75004" style="background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none">
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><span style="font:400 20px 'Marcellus';color:var(--text)">Payment</span><span style="font:500 11px 'Hanken Grotesk';letter-spacing:.06em;text-transform:uppercase;color:#C9A24B;background:rgba(201,162,75,.12);border:1px solid rgba(201,162,75,.3);border-radius:999px;padding:4px 10px">Test mode</span></div>
+            <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:22px">
+              <input value="4242 4242 4242 4242" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);margin-bottom:14px;outline:none">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px"><input value="12 / 28" style="background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none"><input value="123" style="background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none"></div>
+            </div>
+          </div>
+          <div style="width:380px;flex-shrink:0">
+            <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:26px">
+              <div style="font:400 20px 'Marcellus';color:var(--text);margin-bottom:20px">Summary</div>
+              <sc-for list="{{ cart }}" as="i" hint-placeholder-count="2"><div style="display:flex;gap:14px;margin-bottom:16px"><div style="width:54px;height:68px;border-radius:4px;overflow:hidden;background:var(--surface-img);flex-shrink:0"><img src="{{ i.img }}" style="width:100%;height:100%;object-fit:cover;display:block"></div><div style="flex:1"><div style="font:500 14px 'Hanken Grotesk';color:var(--text)">{{ i.name }}</div><div style="font:400 12px 'Hanken Grotesk';color:var(--text-muted)">{{ i.meta }}</div></div><div style="font:600 14px 'Hanken Grotesk';color:var(--text)">{{ i.lineLabel }}</div></div></sc-for>
+              <div style="height:1px;background:var(--line-10);margin:6px 0 18px"></div>
+              <div style="display:flex;justify-content:space-between;font:400 14px 'Hanken Grotesk';color:var(--text-2);margin-bottom:10px"><span>Subtotal</span><span>{{ subtotalLabel }}</span></div>
+              <div style="display:flex;justify-content:space-between;font:400 14px 'Hanken Grotesk';color:var(--text-2);margin-bottom:10px"><span>Shipping</span><span style="color:#4FA77E">Free</span></div>
+              <div style="display:flex;justify-content:space-between;font:400 14px 'Hanken Grotesk';color:var(--text-2);margin-bottom:18px"><span>Tax</span><span>{{ taxLabel }}</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:22px"><span style="font:500 15px 'Hanken Grotesk';color:var(--text)">Total</span><span style="font:400 26px 'Marcellus';color:var(--text)">{{ totalLabel }}</span></div>
+              <button onclick="{{ placeOrder }}" style="width:100%;font:600 15px 'Hanken Grotesk';color:#fff;background:#C8203F;border:none;border-radius:4px;padding:15px;cursor:pointer">{{ payLabel }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- CONFIRMATION -->
+    <sc-if value="{{ isConfirm }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:60px 40px;display:flex;flex-direction:column;align-items:center;text-align:center">
+        <div style="width:72px;height:72px;border-radius:50%;background:rgba(79,167,126,.12);border:1px solid rgba(79,167,126,.4);display:flex;align-items:center;justify-content:center;margin-bottom:24px"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#4FA77E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"></path></svg></div>
+        <div style="font:500 11px 'Hanken Grotesk';letter-spacing:.3em;text-transform:uppercase;color:#C9A24B;margin-bottom:12px">Order confirmed</div>
+        <div style="font:400 40px 'Marcellus';color:var(--text);margin-bottom:12px">Thank you, Elise.</div>
+        <div style="font:400 15px 'Hanken Grotesk';color:var(--text-2);max-width:440px;margin-bottom:8px">Order <span style="color:var(--text);font-weight:600">{{ lastOrderId }}</span> is confirmed. A receipt is on its way to your inbox.</div>
+        <div style="font:400 13px 'Hanken Grotesk';color:var(--text-muted);margin-bottom:36px">Estimated delivery · 2–4 July 2026</div>
+        <div style="display:flex;gap:12px"><button onclick="{{ goOrders }}" style="font:600 14px 'Hanken Grotesk';color:#0C0C0E;background:#F4F0E9;border:none;border-radius:4px;padding:13px 26px;cursor:pointer">View orders</button><button onclick="{{ goCatalog }}" style="font:600 14px 'Hanken Grotesk';color:var(--text-2);background:transparent;border:1px solid var(--line-18);border-radius:4px;padding:13px 26px;cursor:pointer">Continue shopping</button></div>
+      </div>
+    </sc-if>
+
+    <!-- ORDERS -->
+    <sc-if value="{{ isOrders }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:1000px;margin:0 auto;padding:40px">
+        <div style="font:400 32px 'Marcellus';color:var(--text);margin-bottom:24px">Order history</div>
+        <sc-for list="{{ orders }}" as="o" hint-placeholder-count="3">
+          <div style="border:1px solid var(--line-10);border-radius:8px;padding:22px;margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--line-08);margin-bottom:16px">
+              <div style="display:flex;gap:28px"><div><div style="font:500 11px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Order</div><div style="font:600 15px 'Hanken Grotesk';color:var(--text)">{{ o.id }}</div></div><div><div style="font:500 11px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Placed</div><div style="font:600 15px 'Hanken Grotesk';color:var(--text)">{{ o.date }}</div></div><div><div style="font:500 11px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Total</div><div style="font:600 15px 'Hanken Grotesk';color:var(--text)">{{ o.total }}</div></div></div>
+              <span style="{{ o.badgeStyle }}">{{ o.status }}</span>
+            </div>
+            <div style="display:flex;gap:12px"><sc-for list="{{ o.thumbs }}" as="t" hint-placeholder-count="2"><div style="width:46px;height:58px;border-radius:4px;overflow:hidden;background:var(--surface-img)"><img src="{{ t }}" style="width:100%;height:100%;object-fit:cover;display:block"></div></sc-for></div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- SHIPPING -->
+    <sc-if value="{{ isShipping }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="height:200px;background:radial-gradient(120% 140% at 78% 20%, rgba(200,32,63,.22), rgba(200,32,63,0) 55%),linear-gradient(120deg,var(--hero-a),var(--hero-b));display:flex;flex-direction:column;justify-content:center;padding:0 56px;border-bottom:1px solid var(--line-08)">
+          <div style="font:500 11px 'Hanken Grotesk';letter-spacing:.3em;text-transform:uppercase;color:#C9A24B;margin-bottom:12px">Maison Care</div>
+          <div style="font:400 42px/1 'Marcellus';color:var(--text);margin-bottom:10px">Shipping &amp; delivery</div>
+          <div style="font:400 15px 'Hanken Grotesk';color:var(--text-2);max-width:520px">Every order is hand-checked, wrapped in tissue and dispatched from our Paris atelier within 24 hours.</div>
+        </div>
+        <div style="max-width:1000px;margin:0 auto;padding:44px 40px 64px">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px">
+            <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:22px"><div style="width:38px;height:38px;border-radius:50%;background:rgba(201,162,75,.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#C9A24B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"></path><path d="M9 12l2 2 4-4"></path></svg></div><div style="font:400 17px 'Marcellus';color:var(--text);margin-bottom:6px">Tracked &amp; insured</div><div style="font:400 13px/1.6 'Hanken Grotesk';color:var(--text-muted)">Every parcel is fully insured and traceable end-to-end with live updates.</div></div>
+            <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:22px"><div style="width:38px;height:38px;border-radius:50%;background:rgba(79,167,126,.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#4FA77E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v8H3z"></path><path d="M14 10h4l3 3v2h-7z"></path><circle cx="7" cy="18" r="1.6"></circle><circle cx="17" cy="18" r="1.6"></circle></svg></div><div style="font:400 17px 'Marcellus';color:var(--text);margin-bottom:6px">Complimentary over £150</div><div style="font:400 13px/1.6 'Hanken Grotesk';color:var(--text-muted)">Standard shipping is on us for all UK orders above £150.</div></div>
+            <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:22px"><div style="width:38px;height:38px;border-radius:50%;background:rgba(91,139,201,.12);display:flex;align-items:center;justify-content:center;margin-bottom:14px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#5B8BC9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"></path></svg></div><div style="font:400 17px 'Marcellus';color:var(--text);margin-bottom:6px">Carbon-neutral</div><div style="font:400 13px/1.6 'Hanken Grotesk';color:var(--text-muted)">All deliveries are offset through our certified climate partner.</div></div>
+          </div>
+          <div style="font:400 24px 'Marcellus';color:var(--text);margin-bottom:18px">Delivery options</div>
+          <div style="border:1px solid var(--line-10);border-radius:8px;overflow:hidden;margin-bottom:48px">
+            <div style="display:grid;grid-template-columns:1.6fr 1.4fr 1fr;background:var(--bg-deep);border-bottom:1px solid var(--line-10);padding:13px 22px;font:600 11px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)"><span>Method</span><span>Estimated time</span><span style="text-align:right">Cost</span></div>
+            <sc-for list="{{ shippingRows }}" as="r" hint-placeholder-count="4">
+              <div style="display:grid;grid-template-columns:1.6fr 1.4fr 1fr;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line-06)"><div><div style="font:500 15px 'Hanken Grotesk';color:var(--text);margin-bottom:3px">{{ r.name }}</div><div style="font:400 12px 'Hanken Grotesk';color:var(--text-muted)">{{ r.note }}</div></div><span style="font:400 14px 'Hanken Grotesk';color:var(--text-2)">{{ r.time }}</span><span style="font:600 14px 'Hanken Grotesk';color:var(--text);text-align:right">{{ r.cost }}</span></div>
+            </sc-for>
+          </div>
+          <div style="font:400 24px 'Marcellus';color:var(--text);margin-bottom:18px">Frequently asked</div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <sc-for list="{{ shippingFaq }}" as="f" hint-placeholder-count="3">
+              <div style="background:var(--surface);border:1px solid var(--line-08);border-radius:8px;padding:20px 22px"><div style="font:500 15px 'Hanken Grotesk';color:var(--text);margin-bottom:8px">{{ f.q }}</div><div style="font:400 14px/1.65 'Hanken Grotesk';color:var(--text-muted)">{{ f.a }}</div></div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- RETURNS -->
+    <sc-if value="{{ isReturns }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="height:200px;background:radial-gradient(120% 140% at 78% 20%, rgba(200,32,63,.22), rgba(200,32,63,0) 55%),linear-gradient(120deg,var(--hero-a),var(--hero-b));display:flex;flex-direction:column;justify-content:center;padding:0 56px;border-bottom:1px solid var(--line-08)">
+          <div style="font:500 11px 'Hanken Grotesk';letter-spacing:.3em;text-transform:uppercase;color:#C9A24B;margin-bottom:12px">Maison Care</div>
+          <div style="font:400 42px/1 'Marcellus';color:var(--text);margin-bottom:10px">Returns &amp; exchanges</div>
+          <div style="font:400 15px 'Hanken Grotesk';color:var(--text-2);max-width:520px">Not quite right? You have 30 days to return or exchange — return shipping is always free.</div>
+        </div>
+        <div style="max-width:1000px;margin:0 auto;padding:44px 40px 64px">
+          <div style="display:flex;align-items:center;gap:18px;background:var(--surface);border:1px solid rgba(201,162,75,.25);border-radius:8px;padding:24px 26px;margin-bottom:44px">
+            <div style="width:48px;height:48px;border-radius:50%;background:rgba(201,162,75,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C9A24B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></div>
+            <div><div style="font:400 22px 'Marcellus';color:var(--text);margin-bottom:4px">30-day free returns</div><div style="font:400 14px 'Hanken Grotesk';color:var(--text-muted)">Items must be unworn, unwashed and returned with their original tags &amp; packaging.</div></div>
+          </div>
+          <div style="font:400 24px 'Marcellus';color:var(--text);margin-bottom:20px">How it works</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px">
+            <sc-for list="{{ returnSteps }}" as="s" hint-placeholder-count="3">
+              <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:24px"><div style="width:34px;height:34px;border-radius:50%;border:1px solid #C9A24B;color:#C9A24B;display:flex;align-items:center;justify-content:center;font:400 16px 'Marcellus';margin-bottom:16px">{{ s.n }}</div><div style="font:500 15px 'Hanken Grotesk';color:var(--text);margin-bottom:7px">{{ s.title }}</div><div style="font:400 13px/1.6 'Hanken Grotesk';color:var(--text-muted)">{{ s.body }}</div></div>
+            </sc-for>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:44px">
+            <div style="background:var(--surface);border:1px solid rgba(79,167,126,.22);border-radius:8px;padding:24px">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4FA77E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"></path></svg><span style="font:400 18px 'Marcellus';color:var(--text)">Eligible for return</span></div>
+              <div style="display:flex;flex-direction:column;gap:11px">
+                <sc-for list="{{ returnEligible }}" as="e" hint-placeholder-count="3"><div style="display:flex;gap:10px;font:400 14px/1.5 'Hanken Grotesk';color:var(--text-2)"><span style="color:#4FA77E">·</span>{{ e }}</div></sc-for>
+              </div>
+            </div>
+            <div style="background:var(--surface);border:1px solid rgba(217,83,79,.22);border-radius:8px;padding:24px">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D9534F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"></path></svg><span style="font:400 18px 'Marcellus';color:var(--text)">Cannot be accepted</span></div>
+              <div style="display:flex;flex-direction:column;gap:11px">
+                <sc-for list="{{ returnIneligible }}" as="e" hint-placeholder-count="3"><div style="display:flex;gap:10px;font:400 14px/1.5 'Hanken Grotesk';color:var(--text-2)"><span style="color:#D9534F">·</span>{{ e }}</div></sc-for>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;background:var(--bg-deep);border:1px solid var(--line-08);border-radius:8px;padding:26px 28px">
+            <div><div style="font:400 20px 'Marcellus';color:var(--text);margin-bottom:5px">Ready to send something back?</div><div style="font:400 14px 'Hanken Grotesk';color:var(--text-muted)">Refunds are issued to your original payment method within 5–7 working days of arrival.</div></div>
+            <button onclick="{{ goOrders }}" style="font:600 14px 'Hanken Grotesk';color:#fff;background:#C8203F;border:none;border-radius:4px;padding:13px 24px;cursor:pointer;white-space:nowrap">Start a return</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- CONTACT -->
+    <sc-if value="{{ isContact }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="height:200px;background:radial-gradient(120% 140% at 78% 20%, rgba(200,32,63,.22), rgba(200,32,63,0) 55%),linear-gradient(120deg,var(--hero-a),var(--hero-b));display:flex;flex-direction:column;justify-content:center;padding:0 56px;border-bottom:1px solid var(--line-08)">
+          <div style="font:500 11px 'Hanken Grotesk';letter-spacing:.3em;text-transform:uppercase;color:#C9A24B;margin-bottom:12px">We're here to help</div>
+          <div style="font:400 42px/1 'Marcellus';color:var(--text);margin-bottom:10px">Contact us</div>
+          <div style="font:400 15px 'Hanken Grotesk';color:var(--text-2);max-width:520px">Our client advisors are available Monday to Saturday and reply within one business day.</div>
+        </div>
+        <div style="max-width:1000px;margin:0 auto;padding:44px 40px 64px;display:flex;gap:40px;flex-wrap:wrap">
+          <div style="flex:1;min-width:320px">
+            <sc-if value="{{ contactNotSent }}" hint-placeholder-val="{{ true }}">
+              <div style="font:400 24px 'Marcellus';color:var(--text);margin-bottom:6px">Send us a message</div>
+              <div style="font:400 14px 'Hanken Grotesk';color:var(--text-muted);margin-bottom:24px">Fill in the form below and we'll be in touch shortly.</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+                <div><div style="font:500 12px 'Hanken Grotesk';color:var(--text-2);margin-bottom:7px">Full name</div><input placeholder="Elise Moreau" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none"></div>
+                <div><div style="font:500 12px 'Hanken Grotesk';color:var(--text-2);margin-bottom:7px">Email</div><input placeholder="you@example.com" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none"></div>
+              </div>
+              <div style="font:500 12px 'Hanken Grotesk';color:var(--text-2);margin-bottom:7px">Subject</div>
+              <input placeholder="Order enquiry" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);margin-bottom:14px;outline:none">
+              <div style="font:500 12px 'Hanken Grotesk';color:var(--text-2);margin-bottom:7px">Message</div>
+              <textarea placeholder="How can we help?" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px/1.6 'Hanken Grotesk';color:var(--text);margin-bottom:18px;outline:none;min-height:130px;resize:vertical"></textarea>
+              <button onclick="{{ submitContact }}" style="font:600 15px 'Hanken Grotesk';color:#fff;background:#C8203F;border:none;border-radius:4px;padding:14px 28px;cursor:pointer">Send message</button>
+            </sc-if>
+            <sc-if value="{{ contactSent }}" hint-placeholder-val="{{ false }}">
+              <div style="background:var(--surface);border:1px solid rgba(79,167,126,.3);border-radius:8px;padding:40px 32px;text-align:center">
+                <div style="width:60px;height:60px;border-radius:50%;background:rgba(79,167,126,.12);border:1px solid rgba(79,167,126,.4);display:flex;align-items:center;justify-content:center;margin:0 auto 20px"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4FA77E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"></path></svg></div>
+                <div style="font:400 24px 'Marcellus';color:var(--text);margin-bottom:8px">Message sent</div>
+                <div style="font:400 14px 'Hanken Grotesk';color:var(--text-muted);max-width:320px;margin:0 auto 22px">Thank you for reaching out. A client advisor will reply to your email within one business day.</div>
+                <button onclick="{{ resetContact }}" style="font:600 14px 'Hanken Grotesk';color:var(--text-2);background:transparent;border:1px solid var(--line-18);border-radius:4px;padding:11px 22px;cursor:pointer">Send another</button>
+              </div>
+            </sc-if>
+          </div>
+          <div style="width:320px;flex-shrink:0">
+            <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:26px;margin-bottom:16px">
+              <div style="font:400 18px 'Marcellus';color:var(--text);margin-bottom:20px">Client services</div>
+              <div style="display:flex;flex-direction:column;gap:20px">
+                <div style="display:flex;gap:13px"><svg width="18" height="18" style="flex-shrink:0;margin-top:2px" viewBox="0 0 24 24" fill="none" stroke="#C9A24B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg><div><div style="font:500 11px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px">Email</div><div style="font:400 14px 'Hanken Grotesk';color:var(--text)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1073716275507d7179637f7e3e737f7d">[email&#160;protected]</a></div></div></div>
+                <div style="display:flex;gap:13px"><svg width="18" height="18" style="flex-shrink:0;margin-top:2px" viewBox="0 0 24 24" fill="none" stroke="#C9A24B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-3 2a12 12 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"></path></svg><div><div style="font:500 11px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px">Phone</div><div style="font:400 14px 'Hanken Grotesk';color:var(--text)">+44 20 7946 0100</div></div></div>
+                <div style="display:flex;gap:13px"><svg width="18" height="18" style="flex-shrink:0;margin-top:2px" viewBox="0 0 24 24" fill="none" stroke="#C9A24B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><div><div style="font:500 11px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px">Hours</div><div style="font:400 14px/1.5 'Hanken Grotesk';color:var(--text)">Mon–Sat · 9am–7pm GMT</div></div></div>
+                <div style="display:flex;gap:13px"><svg width="18" height="18" style="flex-shrink:0;margin-top:2px" viewBox="0 0 24 24" fill="none" stroke="#C9A24B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 0 0-14 0c0 5.5 7 11 7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg><div><div style="font:500 11px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px">Atelier</div><div style="font:400 14px/1.5 'Hanken Grotesk';color:var(--text)">14 Rue des Archives<br>75004 Paris, France</div></div></div>
+              </div>
+            </div>
+            <div style="background:var(--bg-deep);border:1px solid var(--line-08);border-radius:8px;padding:22px 26px">
+              <div style="font:500 11px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px">Follow Maison</div>
+              <div style="display:flex;gap:12px">
+                <div style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line-14);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#CFCAC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1"></circle></svg></div>
+                <div style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line-14);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#CFCAC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></div>
+                <div style="width:38px;height:38px;border-radius:50%;border:1px solid var(--line-14);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#CFCAC1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4a9 9 0 0 1-2.6 1.3A4 4 0 0 0 12 8v1A9 9 0 0 1 4 4s-4 9 5 13a10 10 0 0 1-6 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0 0-.8A6.5 6.5 0 0 0 22 4z"></path></svg></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- footer -->
+    <div style="border-top:1px solid var(--line-08);padding:28px 40px;display:flex;justify-content:space-between;align-items:center;max-width:1440px;margin:0 auto">
+      <span style="font:600 11px 'Hanken Grotesk';letter-spacing:.32em;color:var(--text-muted)">MAISON © 2026</span>
+      <div style="display:flex;gap:24px;font:500 13px 'Hanken Grotesk';color:var(--text-muted)"><span onclick="{{ goShipping }}" style="cursor:pointer">Shipping</span><span onclick="{{ goReturns }}" style="cursor:pointer">Returns</span><span onclick="{{ goContact }}" style="cursor:pointer">Contact</span></div>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ===== ADMIN ===== -->
+<sc-if value="{{ inAdmin }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;min-height:100vh">
+    <div style="width:240px;background:var(--bg-deep);border-right:1px solid var(--line-08);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh">
+      <div style="padding:22px;border-bottom:1px solid var(--line-08);display:flex;align-items:center;gap:10px"><div style="width:30px;height:30px;border:1px solid #C9A24B;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#C9A24B;font:500 15px 'Marcellus'">M</div><div><div style="font:600 11px 'Hanken Grotesk';letter-spacing:.26em;color:var(--text)">MAISON</div><div style="font:500 9px 'Hanken Grotesk';letter-spacing:.2em;color:#C9A24B">ADMIN</div></div></div>
+      <div style="padding:16px 14px;display:flex;flex-direction:column;gap:3px;font:500 14px 'Hanken Grotesk'">
+        <div onclick="{{ goAdmin }}" style="{{ navDash }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>Dashboard</div>
+        <div onclick="{{ goAdminProducts }}" style="{{ navProducts }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7l4-4h10l4 4-3 2v12H6V9z"></path></svg>Products</div>
+        <div onclick="{{ goAdminOrders }}" style="{{ navOrders }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2h9l5 5v15H6z"></path><path d="M9 12h7M9 16h7"></path></svg>Orders</div>
+      </div>
+      <div onclick="{{ goLogin }}" style="margin-top:auto;padding:18px;border-top:1px solid var(--line-08);font:500 13px 'Hanken Grotesk';color:#C9A24B;cursor:pointer;display:flex;align-items:center;gap:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C9A24B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2"></path><path d="M10 12h10M17 9l3 3-3 3"></path></svg>Log out</div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column">
+      <!-- ADMIN DASHBOARD -->
+      <sc-if value="{{ isAdminDash }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="height:64px;border-bottom:1px solid var(--line-08);display:flex;align-items:center;justify-content:space-between;padding:0 32px"><div style="font:400 22px 'Marcellus';color:var(--text)">Dashboard</div><span onclick="{{ toggleTheme }}" title="Toggle theme" style="cursor:pointer;display:flex;align-items:center;color:var(--text-2)"><sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"></path></svg></sc-if><sc-if value="{{ isLight }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg></sc-if></span></div>
+          <div style="padding:28px 32px">
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px">
+              <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:18px"><div style="font:500 12px 'Hanken Grotesk';color:var(--text-muted);margin-bottom:8px">Total sales</div><div style="font:400 28px 'Marcellus';color:var(--text);margin-bottom:6px">£48,210</div><div style="font:600 12px 'Hanken Grotesk';color:#4FA77E">▲ 12.4%</div></div>
+              <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:18px"><div style="font:500 12px 'Hanken Grotesk';color:var(--text-muted);margin-bottom:8px">Orders</div><div style="font:400 28px 'Marcellus';color:var(--text);margin-bottom:6px">1,284</div><div style="font:600 12px 'Hanken Grotesk';color:#4FA77E">▲ 6.1%</div></div>
+              <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:18px"><div style="font:500 12px 'Hanken Grotesk';color:var(--text-muted);margin-bottom:8px">Avg. order</div><div style="font:400 28px 'Marcellus';color:var(--text);margin-bottom:6px">£152</div><div style="font:600 12px 'Hanken Grotesk';color:#D9534F">▼ 2.0%</div></div>
+              <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:18px"><div style="font:500 12px 'Hanken Grotesk';color:var(--text-muted);margin-bottom:8px">Conversion</div><div style="font:400 28px 'Marcellus';color:var(--text);margin-bottom:6px">3.8%</div><div style="font:600 12px 'Hanken Grotesk';color:#4FA77E">▲ 0.4%</div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:16px">
+              <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:22px">
+                <div style="font:400 18px 'Marcellus';color:var(--text);margin-bottom:18px">Sales over time</div>
+                <svg viewBox="0 0 560 180" style="width:100%;height:180px" preserveAspectRatio="none"><defs><linearGradient id="sg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C8203F" stop-opacity=".35"></stop><stop offset="100%" stop-color="#C8203F" stop-opacity="0"></stop></linearGradient></defs><line x1="0" y1="45" x2="560" y2="45" stroke="var(--line-06)"></line><line x1="0" y1="90" x2="560" y2="90" stroke="var(--line-06)"></line><line x1="0" y1="135" x2="560" y2="135" stroke="var(--line-06)"></line><path d="M0 130 L60 110 L120 120 L180 80 L240 95 L300 60 L360 75 L420 40 L480 55 L540 30 L560 35 L560 180 L0 180 Z" fill="url(#sg2)"></path><path d="M0 130 L60 110 L120 120 L180 80 L240 95 L300 60 L360 75 L420 40 L480 55 L540 30 L560 35" fill="none" stroke="#C8203F" stroke-width="2.5"></path></svg>
+              </div>
+              <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:22px">
+                <div style="font:400 18px 'Marcellus';color:var(--text);margin-bottom:18px">Orders by status</div>
+                <div style="display:flex;align-items:center;gap:20px">
+                  <svg width="120" height="120" viewBox="0 0 42 42"><circle cx="21" cy="21" r="15.9" fill="none" stroke="#26262C" stroke-width="6"></circle><circle cx="21" cy="21" r="15.9" fill="none" stroke="#D9A441" stroke-width="6" stroke-dasharray="22 78" transform="rotate(-90 21 21)"></circle><circle cx="21" cy="21" r="15.9" fill="none" stroke="#5B8BC9" stroke-width="6" stroke-dasharray="18 82" stroke-dashoffset="-22" transform="rotate(-90 21 21)"></circle><circle cx="21" cy="21" r="15.9" fill="none" stroke="#C9A24B" stroke-width="6" stroke-dasharray="20 80" stroke-dashoffset="-40" transform="rotate(-90 21 21)"></circle><circle cx="21" cy="21" r="15.9" fill="none" stroke="#4FA77E" stroke-width="6" stroke-dasharray="34 66" stroke-dashoffset="-60" transform="rotate(-90 21 21)"></circle></svg>
+                  <div style="display:flex;flex-direction:column;gap:8px;font:500 12px 'Hanken Grotesk';color:var(--text-2)"><div style="display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:2px;background:#D9A441"></span>Pending 22%</div><div style="display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:2px;background:#5B8BC9"></span>Processing 18%</div><div style="display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:2px;background:#C9A24B"></span>Shipped 20%</div><div style="display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:2px;background:#4FA77E"></span>Delivered 34%</div><div style="display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:2px;background:#D9534F"></span>Cancelled 6%</div></div>
+                </div>
+              </div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--line-10);border-radius:8px;padding:22px;margin-top:16px">
+              <div style="font:400 18px 'Marcellus';color:var(--text);margin-bottom:18px">Top-selling products</div>
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <sc-for list="{{ topSellers }}" as="t" hint-placeholder-count="5">
+                  <div style="display:flex;align-items:center;gap:14px">
+                    <div style="width:40px;height:50px;border-radius:4px;overflow:hidden;background:var(--surface-img);flex-shrink:0"><img src="{{ t.img }}" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+                    <div style="flex:1;min-width:0"><div style="font:500 14px 'Hanken Grotesk';color:var(--text);margin-bottom:6px">{{ t.name }}</div><div style="height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden"><div style="{{ t.barStyle }}"></div></div></div>
+                    <div style="font:600 13px 'Hanken Grotesk';color:var(--text-2);white-space:nowrap;width:64px;text-align:right">{{ t.units }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+      <!-- ADMIN PRODUCTS -->
+      <sc-if value="{{ isAdminProducts }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="height:64px;border-bottom:1px solid var(--line-08);display:flex;align-items:center;justify-content:space-between;padding:0 32px"><div style="font:400 22px 'Marcellus';color:var(--text)">Products</div><div style="display:flex;align-items:center;gap:18px"><span onclick="{{ toggleTheme }}" title="Toggle theme" style="cursor:pointer;display:flex;align-items:center;color:var(--text-2)"><sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"></path></svg></sc-if><sc-if value="{{ isLight }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg></sc-if></span><button onclick="{{ openAddProduct }}" style="font:600 14px 'Hanken Grotesk';color:#fff;background:#C8203F;border:none;border-radius:4px;padding:10px 18px;cursor:pointer;display:flex;align-items:center;gap:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Add product</button></div></div>
+          <div style="padding:24px 32px">
+            <div style="border:1px solid var(--line-10);border-radius:8px;overflow:hidden">
+              <div style="display:grid;grid-template-columns:2.4fr 1.2fr 1fr 1fr 1.2fr;background:var(--bg-deep);border-bottom:1px solid var(--line-10);padding:13px 20px;font:600 11px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)"><span>Product</span><span>Category</span><span>Price</span><span>Stock</span><span>Status</span></div>
+              <sc-for list="{{ adminProducts }}" as="p" hint-placeholder-count="6">
+                <div onclick="{{ p.open }}" style="display:grid;grid-template-columns:2.4fr 1.2fr 1fr 1fr 1.2fr;align-items:center;padding:12px 20px;border-bottom:1px solid var(--line-06);font:500 14px 'Hanken Grotesk';color:var(--text-2);cursor:pointer"><div style="display:flex;align-items:center;gap:12px"><div style="width:38px;height:46px;border-radius:4px;overflow:hidden;background:var(--surface-img)"><img src="{{ p.img }}" style="width:100%;height:100%;object-fit:cover;display:block"></div><span style="color:var(--text)">{{ p.name }}</span></div><span>{{ p.cat }}</span><span style="color:var(--text)">{{ p.priceLabel }}</span><span>{{ p.stock }}</span><span><span style="{{ p.statusStyle }}">{{ p.status }}</span></span></div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+      <!-- ADMIN ORDERS -->
+      <sc-if value="{{ isAdminOrders }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <div style="height:64px;border-bottom:1px solid var(--line-08);display:flex;align-items:center;justify-content:space-between;padding:0 32px"><div style="font:400 22px 'Marcellus';color:var(--text)">Orders</div><span onclick="{{ toggleTheme }}" title="Toggle theme" style="cursor:pointer;display:flex;align-items:center;color:var(--text-2)"><sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"></path></svg></sc-if><sc-if value="{{ isLight }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg></sc-if></span></div>
+          <div style="padding:24px 32px">
+            <div style="border:1px solid var(--line-10);border-radius:8px;overflow:visible">
+              <div style="display:grid;grid-template-columns:140px 1.4fr 90px 150px 120px 110px;background:var(--bg-deep);border-bottom:1px solid var(--line-10);padding:13px 20px;font:600 11px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)"><span>Order</span><span>Customer</span><span>Items</span><span>Status</span><span>Total</span><span>Date</span></div>
+              <sc-for list="{{ adminOrders }}" as="o" hint-placeholder-count="6">
+                <div style="display:grid;grid-template-columns:140px 1.4fr 90px 150px 120px 110px;align-items:center;padding:15px 20px;border-bottom:1px solid var(--line-06);font:500 14px 'Hanken Grotesk';color:var(--text-2)"><span style="color:#C9A24B;font-weight:600">{{ o.id }}</span><span>{{ o.customer }}</span><span>{{ o.items }}</span><span style="position:relative"><span onclick="{{ o.toggleMenu }}" style="cursor:pointer;display:inline-flex;align-items:center;gap:5px"><span style="{{ o.badgeStyle }}">{{ o.status }}</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8B867D" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg></span><sc-if value="{{ o.menuOpen }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;top:28px;left:0;z-index:40;background:var(--surface);border:1px solid var(--line-12);border-radius:6px;box-shadow:0 12px 30px rgba(0,0,0,.35);overflow:hidden;min-width:150px"><sc-for list="{{ o.options }}" as="opt" hint-placeholder-count="5"><div onclick="{{ opt.choose }}" style="{{ opt.rowStyle }}"><span style="{{ opt.badge }}">{{ opt.label }}</span></div></sc-for></div></sc-if></span><span style="color:var(--text);font-weight:600">{{ o.total }}</span><span style="color:var(--text-muted)">{{ o.date }}</span></div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <!-- ADMIN: PRODUCT DETAILS MODAL -->
+  <sc-if value="{{ showViewModal }}" hint-placeholder-val="{{ false }}">
+    <div onclick="{{ closeModal }}" style="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:24px">
+      <div onclick="{{ stopProp }}" style="width:760px;max-width:100%;max-height:88vh;overflow-y:auto;overflow-x:hidden;background:var(--surface);border:1px solid var(--line-10);border-radius:10px;box-shadow:0 24px 60px rgba(0,0,0,.4)">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--line-08)">
+          <div style="font:400 20px 'Marcellus';color:var(--text)">Product details</div>
+          <span onclick="{{ closeModal }}" style="cursor:pointer;display:flex;color:var(--text-muted)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></span>
+        </div>
+        <div style="display:flex;gap:24px;padding:24px">
+          <div style="width:240px;flex-shrink:0;aspect-ratio:4/5;border-radius:8px;overflow:hidden;background:var(--surface-img)"><img src="{{ adminView.img }}" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="font:500 11px 'Hanken Grotesk';letter-spacing:.14em;text-transform:uppercase;color:#C9A24B">{{ adminView.cat }}</span><span style="{{ adminView.statusStyle }}">{{ adminView.status }}</span></div>
+            <div style="font:400 26px 'Marcellus';color:var(--text);margin-bottom:6px">{{ adminView.name }}</div>
+            <div style="font:400 22px 'Hanken Grotesk';color:var(--text);margin-bottom:20px">{{ adminView.priceLabel }}</div>
+            <div style="display:flex;gap:30px;margin-bottom:20px">
+              <div><div style="font:500 11px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px">SKU</div><div style="font:600 14px 'Hanken Grotesk';color:var(--text)">{{ adminView.idLabel }}</div></div>
+              <div><div style="font:500 11px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px">In stock</div><div style="font:600 14px 'Hanken Grotesk';color:var(--text)">{{ adminView.stock }}</div></div>
+            </div>
+            <div style="font:500 11px 'Hanken Grotesk';letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:7px">Description</div>
+            <div style="font:400 14px/1.7 'Hanken Grotesk';color:var(--text-2)">{{ adminView.desc }}</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-top:1px solid var(--line-08)"><button onclick="{{ deleteProduct }}" style="font:600 14px 'Hanken Grotesk';color:#D9534F;background:transparent;border:1px solid rgba(217,83,79,.4);border-radius:4px;padding:10px 18px;cursor:pointer;display:flex;align-items:center;gap:7px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D9534F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"></path></svg>Delete</button><div style="display:flex;gap:12px"><button onclick="{{ closeModal }}" style="font:600 14px 'Hanken Grotesk';color:var(--text);background:transparent;border:1px solid var(--line-18);border-radius:4px;padding:10px 22px;cursor:pointer">Close</button><button onclick="{{ editProduct }}" style="font:600 14px 'Hanken Grotesk';color:#fff;background:#C8203F;border:none;border-radius:4px;padding:10px 22px;cursor:pointer">Edit product</button></div></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ADMIN: ADD PRODUCT MODAL -->
+  <sc-if value="{{ showAddModal }}" hint-placeholder-val="{{ false }}">
+    <div onclick="{{ closeModal }}" style="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:24px">
+      <div onclick="{{ stopProp }}" style="width:560px;max-width:100%;max-height:90vh;overflow-y:auto;overflow-x:hidden;background:var(--surface);border:1px solid var(--line-10);border-radius:10px;box-shadow:0 24px 60px rgba(0,0,0,.4)">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--line-08)">
+          <div style="font:400 20px 'Marcellus';color:var(--text)">{{ addModalTitle }}</div>
+          <span onclick="{{ closeModal }}" style="cursor:pointer;display:flex;color:var(--text-muted)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></span>
+        </div>
+        <div style="padding:22px 24px;display:flex;flex-direction:column;gap:16px">
+          <div><div style="font:500 12px 'Hanken Grotesk';color:var(--text-2);margin-bottom:7px">Product name</div><input value="{{ formName }}" onChange="{{ onFormName }}" placeholder="e.g. Linen blazer" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div><div style="font:500 12px 'Hanken Grotesk';color:var(--text-2);margin-bottom:7px">Category</div><select value="{{ formCat }}" onChange="{{ onFormCat }}" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none;cursor:pointer"><option>Dresses</option><option>Outerwear</option><option>Knitwear</option><option>Trousers</option><option>Accessories</option></select></div>
+            <div><div style="font:500 12px 'Hanken Grotesk';color:var(--text-2);margin-bottom:7px">Price (£)</div><input type="number" value="{{ formPrice }}" onChange="{{ onFormPrice }}" placeholder="0" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div><div style="font:500 12px 'Hanken Grotesk';color:var(--text-2);margin-bottom:7px">Stock</div><input type="number" value="{{ formStock }}" onChange="{{ onFormStock }}" placeholder="0" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none"></div>
+            <div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px"><span style="font:500 12px 'Hanken Grotesk';color:var(--text-2)">Image (URL or upload)</span><label style="font:500 11px 'Hanken Grotesk';color:#C9A24B;cursor:pointer;display:flex;align-items:center;gap:5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C9A24B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"></path></svg>Upload<input type="file" accept="image/*" onChange="{{ uploadImage }}" style="display:none"></label></div><input value="{{ formPhoto }}" onChange="{{ onFormPhoto }}" placeholder="https://… or upload an image" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px 'Hanken Grotesk';color:var(--text);outline:none"></div>
+          </div>
+          <div><div style="font:500 12px 'Hanken Grotesk';color:var(--text-2);margin-bottom:7px">Description</div><textarea value="{{ formDesc }}" onChange="{{ onFormDesc }}" placeholder="Short description of the piece" style="width:100%;box-sizing:border-box;background:var(--surface-2);border:1px solid var(--line-16);border-radius:4px;padding:12px 13px;font:400 14px/1.6 'Hanken Grotesk';color:var(--text);outline:none;min-height:92px;resize:vertical"></textarea></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:12px;padding:16px 24px;border-top:1px solid var(--line-08)">
+          <button onclick="{{ closeModal }}" style="font:600 14px 'Hanken Grotesk';color:var(--text);background:transparent;border:1px solid var(--line-18);border-radius:4px;padding:11px 22px;cursor:pointer">Cancel</button>
+          <button onclick="{{ saveProduct }}" style="font:600 14px 'Hanken Grotesk';color:#fff;background:#C8203F;border:none;border-radius:4px;padding:11px 24px;cursor:pointer">{{ saveLabel }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</sc-if>
+
+<!-- TOAST -->
+<sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:50;display:flex;gap:11px;align-items:center;background:var(--surface-img);border:1px solid rgba(79,167,126,.3);border-radius:8px;padding:14px 18px;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:mztoast .3s ease"><div style="width:30px;height:30px;border-radius:50%;background:rgba(79,167,126,.14);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4FA77E" stroke-width="2.4" stroke-linecap="round"><path d="M5 12l5 5L20 6"></path></svg></div><div><div style="font:600 13px 'Hanken Grotesk';color:var(--text)">{{ toastTitle }}</div><div style="font:400 12px 'Hanken Grotesk';color:var(--text-muted)">{{ toastText }}</div></div><sc-if value="{{ toastView }}" hint-placeholder-val="{{ false }}"><span onclick="{{ goCart }}" style="font:500 12px 'Hanken Grotesk';color:#C9A24B;cursor:pointer;margin-left:6px">View</span></sc-if></div>
+</sc-if>
+
+</div>
+</x-dc>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  lsGet(k, d) { try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } }
+  lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+
+  PRICE_MIN = 60;
+  PRICE_MAX = 420;
+  PER_PAGE = 8;
+  SALES_BASE = { 1:142, 2:96, 3:188, 4:74, 5:121, 6:103, 7:159, 8:88, 9:112, 10:97 };
+
+  state = { screen: 'catalog', selectedId: 1, qty: 1, selSize: 'S', activeCat: 'All', toast: null, lastOrderId: null, agree: true, contactSent: false, portal: 'customer', theme: (function(){ try { return localStorage.getItem('maison-theme') === 'light' ? 'light' : 'dark'; } catch(e){ return 'dark'; } })(), modal: null, adminSelId: null, editId: null, form: { name:'', cat:'Dresses', price:'', stock:'', photo:'', desc:'' }, cart: this.lsGet('maison-cart', []), orders: this.lsGet('maison-orders', null), extraProducts: this.lsGet('maison-products', []), productEdits: this.lsGet('maison-edits', {}), deletedIds: this.lsGet('maison-deleted', []), statusOverrides: this.lsGet('maison-status', {}), search: '', priceMin: 60, priceMax: 420, sort: 'newest', sortOpen: false, page: 1, statusMenuFor: null };
+
+  toggleTheme() {
+    var t = this.state.theme === 'light' ? 'dark' : 'light';
+    try { localStorage.setItem('maison-theme', t); } catch(e){}
+    this.setState({ theme: t });
+  }
+
+  PRODUCTS = [
+    { id:1, name:'Silk slip midi dress', cat:'Dresses', price:189, photo:'1539008835657-9e8e9680c956', desc:'Cut from washed silk with a bias drape and adjustable straps. A fluid, understated piece that moves between day and evening.', tag:'NEW' },
+    { id:2, name:'Wool overcoat', cat:'Outerwear', price:320, photo:'1539109136881-3be0616acf4b', desc:'A double-faced wool coat with a relaxed shoulder and tonal horn buttons. Fully lined, made to layer.' },
+    { id:3, name:'Cashmere crew', cat:'Knitwear', price:132, old:165, photo:'1434389677669-e08b4cac3105', desc:'Pure grade-A cashmere knitted to a fine gauge, with ribbed trims and a clean crew neck.', tag:'SALE' },
+    { id:4, name:'Pleated wide-leg trouser', cat:'Trousers', price:148, photo:'1542295669297-4d352b042bca', desc:'High-rise pleated trousers in a fluid crepe, falling to a generous wide leg.' },
+    { id:5, name:'Satin wrap gown', cat:'Dresses', price:245, photo:'1515372039744-b8f02a3ae446', desc:'A floor-length satin gown with a true wrap front and a softly gathered waist.' },
+    { id:6, name:'Leather tote', cat:'Accessories', price:210, photo:'1591047139829-d91aecb6caea', desc:'Structured vegetable-tanned leather tote with a suede-lined interior and magnetic close.' },
+    { id:7, name:'Ribbed turtleneck', cat:'Knitwear', price:98, photo:'1485462537746-965f33f7f6a7', desc:'A slim merino turtleneck with a high fold-over neck and a body-skimming rib.' },
+    { id:8, name:'Belted trench', cat:'Outerwear', price:298, photo:'1521577352947-9bb58764b69a', desc:'A water-resistant cotton-gabardine trench with storm flap, epaulettes and a self belt.' },
+    { id:9, name:'Tailored blazer', cat:'Outerwear', price:265, photo:'1495385794356-15371f348c31', desc:'A single-breasted blazer with a softly constructed shoulder and a nipped waist.' },
+    { id:10, name:'Crepe slip dress', cat:'Dresses', price:172, photo:'1581044777550-4cfa60707c03', desc:'A minimal bias-cut slip in matte crepe, with delicate straps and a cowl back.' }
+  ];
+
+  SIZES = ['XS','S','M','L'];
+
+  SHIPPING_ROWS = [
+    { name:'Standard', note:'Royal Mail Tracked', time:'3–5 working days', cost:'£5 · Free over £150' },
+    { name:'Express', note:'DPD next-working-day', time:'1–2 working days', cost:'£12' },
+    { name:'Named day', note:'Choose your delivery date', time:'On your chosen day', cost:'£18' },
+    { name:'International', note:'DHL Express, duties included', time:'5–10 working days', cost:'from £20' }
+  ];
+  SHIPPING_FAQ = [
+    { q:'When will my order ship?', a:'Orders placed before 2pm GMT are dispatched the same working day from our Paris atelier. Orders placed afterwards ship the next working day.' },
+    { q:'Can I track my parcel?', a:'Yes — a tracking link is emailed the moment your order leaves us, with live updates until it reaches your door.' },
+    { q:'Do you ship internationally?', a:'We deliver to over 60 countries. Duties and taxes are calculated and included at checkout, so there is nothing to pay on arrival.' }
+  ];
+
+  RETURN_STEPS = [
+    { n:'1', title:'Request a return', body:'Open the order in your account and select the pieces you would like to send back within 30 days of delivery.' },
+    { n:'2', title:'Pack it up', body:'Reuse the original packaging and attach the prepaid, pre-addressed returns label we email to you.' },
+    { n:'3', title:'Drop it off', body:'Leave it at any partner drop-off point or book a free collection. We will email you once it arrives.' }
+  ];
+  RETURN_ELIGIBLE = ['Unworn, unwashed items with original tags','Returned within 30 days of delivery','Footwear in its original undamaged box','Faulty or incorrectly sent pieces — always'];
+  RETURN_INELIGIBLE = ['Final-sale and archive-sale items','Pierced jewellery & earrings, for hygiene','Items without their original tags','Made-to-order or monogrammed pieces'];
+
+  img(photo, w, h) { if (!photo) return ''; if (/^(https?:|data:|blob:)/.test(photo)) return photo; return 'https://images.unsplash.com/photo-' + photo + '?w=' + w + '&h=' + h + '&fit=crop&crop=entropy&q=80&auto=format'; }
+  STOCK_BY_ID = { 1:6, 2:12, 3:3, 4:0, 5:18, 6:9, 7:22, 8:14, 9:7, 10:11 };
+  allProducts() {
+    var edits = this.state.productEdits || {}, del = this.state.deletedIds || [];
+    var base = this.PRODUCTS.concat(this.state.extraProducts || []);
+    return base.filter(function(p){ return del.indexOf(p.id) < 0; }).map(function(p){ return edits[p.id] ? Object.assign({}, p, edits[p.id]) : p; });
+  }
+  stockOf(p) { return (p.stock != null) ? Number(p.stock) : (this.STOCK_BY_ID[p.id] != null ? this.STOCK_BY_ID[p.id] : 0); }
+  gbp(n) { return '£' + n.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  prod(id) { return this.allProducts().find(function(p){ return p.id === id; }); }
+
+  openAdminView(id) { this.setState({ modal: 'view', adminSelId: id }); }
+  openAddProduct() { this.setState({ modal: 'add', editId: null, form: { name:'', cat:'Dresses', price:'', stock:'', photo:'', desc:'' } }); }
+  closeModal() { this.setState({ modal: null }); }
+  setForm(k, v) { var f = Object.assign({}, this.state.form); f[k] = v; this.setState({ form: f }); }
+  openEditProduct(id) {
+    var p = this.prod(id); if (!p) return;
+    this.setState({ modal: 'add', editId: id, form: { name: p.name || '', cat: p.cat || 'Dresses', price: p.price != null ? String(p.price) : '', stock: String(this.stockOf(p)), photo: p.photo || '', desc: p.desc || '' } });
+  }
+  deleteProduct(id) {
+    var self = this;
+    var isCustom = (this.state.extraProducts || []).some(function(p){ return p.id === id; });
+    var extra = (this.state.extraProducts || []).filter(function(p){ return p.id !== id; });
+    var del = this.state.deletedIds.slice();
+    if (!isCustom && del.indexOf(id) < 0) del.push(id);
+    var edits = Object.assign({}, this.state.productEdits); delete edits[id];
+    this.lsSet('maison-products', extra); this.lsSet('maison-deleted', del); this.lsSet('maison-edits', edits);
+    this.setState({ extraProducts: extra, deletedIds: del, productEdits: edits, modal: null, adminSelId: null, toast: 'Product removed from catalogue', toastTitle: 'Product deleted', toastView: false });
+    clearTimeout(this._t); this._t = setTimeout(function(){ self.setState({ toast: null }); }, 2600);
+  }
+  uploadImage(e) {
+    var file = e && e.target && e.target.files && e.target.files[0]; if (!file) return;
+    var self = this; var r = new FileReader();
+    r.onload = function(){ self.setForm('photo', r.result); };
+    r.readAsDataURL(file);
+  }
+  setOrderStatus(id, status) {
+    var ov = Object.assign({}, this.state.statusOverrides); ov[id] = status;
+    this.lsSet('maison-status', ov);
+    var hasOrders = !!this.state.orders;
+    var orders = (this.state.orders || []).map(function(o){ return o.id === id ? Object.assign({}, o, { status: status }) : o; });
+    if (hasOrders) this.lsSet('maison-orders', orders);
+    this.setState({ statusOverrides: ov, orders: hasOrders ? orders : this.state.orders, statusMenuFor: null });
+  }
+  toggleStatusMenu(id) { this.setState({ statusMenuFor: this.state.statusMenuFor === id ? null : id }); }
+  setSearch(v) { this.setState({ search: v, page: 1 }); }
+  toggleSortMenu() { this.setState({ sortOpen: !this.state.sortOpen }); }
+  setSort(v) { this.setState({ sort: v, sortOpen: false, page: 1 }); }
+  goPage(n) { this.setState({ page: n, sortOpen: false }); }
+  startPriceDrag(which, e) {
+    if (e && e.preventDefault) e.preventDefault();
+    var self = this;
+    var track = e.currentTarget && e.currentTarget.parentNode; if (!track) return;
+    var rect = track.getBoundingClientRect();
+    var move = function(ev){
+      var x = ev.touches ? ev.touches[0].clientX : ev.clientX;
+      var frac = Math.min(1, Math.max(0, (x - rect.left) / rect.width));
+      var val = Math.round((self.PRICE_MIN + frac * (self.PRICE_MAX - self.PRICE_MIN)) / 5) * 5;
+      if (which === 'min') self.setState({ priceMin: Math.min(val, self.state.priceMax - 5), page: 1 });
+      else self.setState({ priceMax: Math.max(val, self.state.priceMin + 5), page: 1 });
+    };
+    var up = function(){ window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('touchmove', move); window.removeEventListener('touchend', up); };
+    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
+    window.addEventListener('touchmove', move, {passive:false}); window.addEventListener('touchend', up);
+  }
+  saveProduct() {
+    var f = this.state.form || {};
+    if (!f.name || !String(f.name).trim() || f.price === '' || isNaN(Number(f.price))) {
+      this.setState({ toast: 'Please enter a product name and a valid price', toastTitle: 'Missing details', toastView: false });
+      var self0 = this; clearTimeout(this._t); this._t = setTimeout(function(){ self0.setState({ toast: null }); }, 2600);
+      return;
+    }
+    var fields = {
+      name: String(f.name).trim(), cat: f.cat || 'Dresses',
+      price: Number(f.price), stock: f.stock === '' ? 0 : Number(f.stock),
+      photo: String(f.photo || '').trim(),
+      desc: String(f.desc || '').trim() || 'A new addition to the Maison collection.'
+    };
+    var self = this;
+    if (this.state.editId != null) {
+      if (!fields.photo) delete fields.photo;
+      var edits = Object.assign({}, this.state.productEdits);
+      edits[this.state.editId] = Object.assign({}, edits[this.state.editId] || {}, fields);
+      this.lsSet('maison-edits', edits);
+      this.setState({ productEdits: edits, modal: null, editId: null, toast: fields.name + ' has been updated', toastTitle: 'Product updated', toastView: false });
+    } else {
+      var ids = this.allProducts().map(function(p){ return p.id; });
+      var nextId = Math.max.apply(null, ids.concat([10])) + 1;
+      if (!fields.photo) fields.photo = '1490481651871-ab68de25d43d';
+      var prod = Object.assign({ id: nextId, tag: 'NEW', custom: true }, fields);
+      var extra = (this.state.extraProducts || []).concat([prod]);
+      this.lsSet('maison-products', extra);
+      this.setState({ extraProducts: extra, modal: null, toast: prod.name + ' added to catalogue', toastTitle: 'Product added', toastView: false });
+    }
+    clearTimeout(this._t); this._t = setTimeout(function(){ self.setState({ toast: null }); }, 2600);
+  }
+
+  componentDidUpdate(pp, ps) { if (ps.screen !== this.state.screen) { try { window.scrollTo(0, 0); } catch(e){} } }
+
+  go(screen) { this.setState({ screen: screen }); }
+  openProduct(id) { this.setState({ screen: 'product', selectedId: id, qty: 1, selSize: 'S' }); }
+
+  addToCart() {
+    var p = this.prod(this.state.selectedId); if (!p) return;
+    var size = this.state.selSize, qty = this.state.qty;
+    var cart = this.state.cart.map(function(i){ return Object.assign({}, i); });
+    var found = cart.find(function(i){ return i.id === p.id && i.size === size; });
+    if (found) { found.qty += qty; } else { cart.push({ id: p.id, size: size, qty: qty }); }
+    this.lsSet('maison-cart', cart);
+    var self = this;
+    this.setState({ cart: cart, toast: p.name + ' · Size ' + size, toastTitle: 'Added to bag', toastView: true });
+    clearTimeout(this._t); this._t = setTimeout(function(){ self.setState({ toast: null }); }, 2600);
+  }
+  changeLine(id, size, delta) {
+    var cart = this.state.cart.map(function(i){ return Object.assign({}, i); });
+    var it = cart.find(function(i){ return i.id === id && i.size === size; });
+    if (!it) return;
+    it.qty += delta;
+    cart = cart.filter(function(i){ return i.qty > 0; });
+    this.lsSet('maison-cart', cart);
+    this.setState({ cart: cart });
+  }
+  removeLine(id, size) { var cart = this.state.cart.filter(function(i){ return !(i.id === id && i.size === size); }); this.lsSet('maison-cart', cart); this.setState({ cart: cart }); }
+
+  subtotal() { var self = this; return this.state.cart.reduce(function(s,i){ var p = self.prod(i.id); return s + (p ? p.price * i.qty : 0); }, 0); }
+
+  seedOrders() {
+    return [
+      { id:'#MA-0987', date:'11 Jun 2026', total:268, status:'Delivered', items:2, customer:'Elise Moreau', thumbs:[3,7] },
+      { id:'#MA-0921', date:'2 May 2026', total:132, status:'Delivered', items:1, customer:'Elise Moreau', thumbs:[3] }
+    ];
+  }
+  placeOrder() {
+    var self = this;
+    var total = this.subtotal() * 1.2;
+    var n = 1042 + (this.state.orders ? this.state.orders.length - 2 : 0);
+    var id = '#MA-' + n;
+    var thumbs = this.state.cart.map(function(i){ return i.id; });
+    var existing = this.state.orders || this.seedOrders();
+    var order = { id:id, date:'29 Jun 2026', total:Math.round(total), status:'Pending', items:this.state.cart.reduce(function(s,i){return s+i.qty;},0), customer:'Elise Moreau', thumbs:thumbs };
+    var newOrders = [order].concat(existing);
+    this.lsSet('maison-orders', newOrders);
+    this.lsSet('maison-cart', []);
+    this.setState({ orders: newOrders, cart: [], screen: 'confirm', lastOrderId: id });
+  }
+
+  badgeStyle(status) {
+    var map = {
+      Pending:['#D9A441','rgba(217,164,65,.12)','rgba(217,164,65,.3)'],
+      Processing:['#5B8BC9','rgba(91,139,201,.12)','rgba(91,139,201,.3)'],
+      Shipped:['#C9A24B','rgba(201,162,75,.12)','rgba(201,162,75,.3)'],
+      Delivered:['#4FA77E','rgba(79,167,126,.12)','rgba(79,167,126,.3)'],
+      Cancelled:['#D9534F','rgba(217,83,79,.12)','rgba(217,83,79,.3)']
+    };
+    var c = map[status] || map.Pending;
+    return 'font:600 10px \'Hanken Grotesk\';letter-spacing:.06em;text-transform:uppercase;color:'+c[0]+';background:'+c[1]+';border:1px solid '+c[2]+';border-radius:999px;padding:5px 11px;display:inline-block';
+  }
+
+  renderVals() {
+    var self = this; var s = this.state;
+    var screen = s.screen;
+    var storeScreens = ['catalog','product','cart','checkout','confirm','orders','shipping','returns','contact'];
+    var adminScreens = ['admin-dash','admin-products','admin-orders'];
+    var orders = s.orders || this.seedOrders();
+
+    var ALL = self.allProducts();
+    var mapCard = function(p){
+      var stock = self.stockOf(p);
+      var stockLabel = stock===0 ? 'Sold out' : (stock<=3 ? 'Low stock' : 'In stock');
+      var stockColor = stock===0 ? '#D9534F' : (stock<=3 ? '#D9A441' : '#4FA77E');
+      return {
+        id:p.id, name:p.name, cat:p.cat, priceLabel:'£'+p.price,
+        img:self.img(p.photo, 500, 666),
+        hasTag: !!p.tag, tag: p.tag || '',
+        tagStyle: 'position:absolute;top:10px;left:10px;font:600 10px \'Hanken Grotesk\';border-radius:3px;padding:4px 8px;color:'+(p.tag==='SALE'?'#fff;background:#C8203F':'#0C0C0E;background:#C9A24B'),
+        stockLabel: stockLabel,
+        stockStyle: 'font:500 11px \'Hanken Grotesk\';margin-top:5px;color:'+stockColor,
+        open: function(){ self.openProduct(p.id); }
+      };
+    };
+    var q = (s.search || '').trim().toLowerCase();
+    var matched = ALL.filter(function(p){
+      if (s.activeCat !== 'All' && p.cat !== s.activeCat) return false;
+      if (q && p.name.toLowerCase().indexOf(q) < 0) return false;
+      if (p.price < s.priceMin || p.price > s.priceMax) return false;
+      return true;
+    });
+    if (s.sort === 'price-asc') matched.sort(function(a,b){ return a.price - b.price; });
+    else if (s.sort === 'price-desc') matched.sort(function(a,b){ return b.price - a.price; });
+    else matched.sort(function(a,b){ return b.id - a.id; });
+    var per = self.PER_PAGE, totalMatched = matched.length;
+    var pageCount = Math.max(1, Math.ceil(totalMatched / per));
+    var page = Math.min(Math.max(1, s.page || 1), pageCount);
+    var filtered = matched.slice((page-1)*per, page*per);
+
+    var pageBtns = [];
+    for (var pi=1; pi<=pageCount; pi++){ (function(n){ pageBtns.push({ n:n, choose:function(){ self.goPage(n); },
+      style:'min-width:34px;height:34px;padding:0 8px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font:500 13px \'Hanken Grotesk\';border:1px solid '+(n===page?'#C8203F':'var(--line-12)')+';color:'+(n===page?'#fff':'var(--text-2)')+';background:'+(n===page?'#C8203F':'transparent') }); })(pi); }
+    var navBtn = function(enabled){ return 'min-width:34px;height:34px;padding:0 12px;display:flex;align-items:center;justify-content:center;border-radius:4px;font:500 13px \'Hanken Grotesk\';border:1px solid var(--line-12);color:'+(enabled?'var(--text-2)':'var(--text-faint)')+';cursor:'+(enabled?'pointer':'default')+';background:transparent'; };
+
+    var sortLabels = { 'newest':'Newest', 'price-asc':'Price: Low to High', 'price-desc':'Price: High to Low' };
+    var sortOptions = [ {k:'newest',l:'Newest'}, {k:'price-asc',l:'Price: Low to High'}, {k:'price-desc',l:'Price: High to Low'} ].map(function(o){
+      return { label:o.l, choose:function(){ self.setSort(o.k); }, style:'padding:9px 13px;cursor:pointer;white-space:nowrap;font:500 13px \'Hanken Grotesk\';color:'+(s.sort===o.k?'#C9A24B':'var(--text-2)') };
+    });
+
+    var pr0=self.PRICE_MIN, px0=self.PRICE_MAX, rng=px0-pr0;
+    var minPct=((s.priceMin-pr0)/rng)*100, maxPct=((s.priceMax-pr0)/rng)*100;
+    var handleBase='position:absolute;top:-5px;width:13px;height:13px;border-radius:50%;background:#F4F0E9;transform:translateX(-50%);cursor:grab;touch-action:none;';
+
+    var catCounts = {};
+    ALL.forEach(function(p){ catCounts[p.cat] = (catCounts[p.cat]||0)+1; });
+    var cats = ['All','Dresses','Outerwear','Knitwear','Trousers','Accessories'];
+    var categories = cats.map(function(c){
+      var active = s.activeCat === c;
+      return {
+        label:c, count: c==='All' ? ALL.length : (catCounts[c]||0),
+        style:'display:flex;justify-content:space-between;cursor:pointer;color:'+(active?'#C9A24B':'var(--text-2)'),
+        choose:function(){ self.setState({ activeCat:c }); }
+      };
+    });
+
+    var sel = this.prod(s.selectedId) || ALL[0];
+    var selVM = {
+      name:sel.name, cat:sel.cat, desc:sel.desc, priceLabel:'£'+sel.price,
+      imgLarge:this.img(sel.photo, 800, 1000)
+    };
+    var recommended = ALL.filter(function(p){ return p.id !== sel.id && p.cat === sel.cat; });
+    if (recommended.length < 4) { ALL.forEach(function(p){ if (p.id!==sel.id && recommended.indexOf(p)<0 && recommended.length<4) recommended.push(p); }); }
+    recommended = recommended.slice(0,4).map(mapCard);
+
+    var sizes = this.SIZES.map(function(sz){
+      var on = s.selSize === sz;
+      return { label:sz, choose:function(){ self.setState({ selSize:sz }); },
+        style:'width:48px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:4px;cursor:pointer;font:500 14px \'Hanken Grotesk\';border:1px solid '+(on?'var(--text)':'var(--line-18)')+';color:'+(on?'var(--text)':'var(--text-2)') };
+    });
+
+    var cartVM = this.state.cart.map(function(i){
+      var p = self.prod(i.id);
+      return {
+        name:p.name, meta:p.cat + ' · Size ' + i.size, qty:i.qty,
+        img:self.img(p.photo, 200, 250),
+        lineLabel:'£'+(p.price*i.qty),
+        inc:function(){ self.changeLine(i.id, i.size, 1); },
+        dec:function(){ self.changeLine(i.id, i.size, -1); },
+        remove:function(){ self.removeLine(i.id, i.size); }
+      };
+    });
+
+    var sub = this.subtotal();
+    var count = this.state.cart.reduce(function(c,i){ return c+i.qty; }, 0);
+
+    var ordersVM = orders.map(function(o){
+      var st = s.statusOverrides[o.id] || o.status;
+      return { id:o.id, date:o.date, items:o.items, total:'£'+o.total.toLocaleString('en-GB')+'.00', status:st,
+        badgeStyle:self.badgeStyle(st),
+        thumbs:o.thumbs.map(function(id){ var p=self.prod(id); return p ? self.img(p.photo, 120, 150) : ''; }) };
+    });
+
+    var statusStyleFor = function(status){
+      var sc = status==='Active' ? ['#4FA77E','rgba(79,167,126,.12)','rgba(79,167,126,.3)'] : (status==='Low stock' ? ['#D9A441','rgba(217,164,65,.12)','rgba(217,164,65,.3)'] : ['#D9534F','rgba(217,83,79,.12)','rgba(217,83,79,.3)']);
+      return 'font:600 10px \'Hanken Grotesk\';letter-spacing:.06em;text-transform:uppercase;color:'+sc[0]+';background:'+sc[1]+';border:1px solid '+sc[2]+';border-radius:999px;padding:4px 10px;display:inline-block';
+    };
+    var statusFor = function(stock){ return stock===0 ? 'Sold out' : (stock<=3 ? 'Low stock' : 'Active'); };
+    var adminProducts = ALL.map(function(p){
+      var stock = self.stockOf(p);
+      var status = statusFor(stock);
+      return { id:p.id, name:p.name, cat:p.cat, priceLabel:'£'+p.price, stock:stock, status:status,
+        img:self.img(p.photo, 120, 150),
+        open: function(){ self.openAdminView(p.id); },
+        statusStyle: statusStyleFor(status) };
+    });
+
+    var av = self.prod(s.adminSelId), adminView = null;
+    if (av) {
+      var avStock = self.stockOf(av), avStatus = statusFor(avStock);
+      adminView = { name:av.name, cat:av.cat, priceLabel:'£'+av.price, stock:avStock, status:avStatus,
+        desc: av.desc || 'No description provided.', img: self.img(av.photo, 640, 800),
+        hasTag: !!av.tag, tag: av.tag || '', statusStyle: statusStyleFor(avStatus),
+        idLabel: 'PRD-' + String(av.id).padStart(4, '0') };
+    }
+
+    var STATUSES = ['Pending','Processing','Shipped','Delivered','Cancelled'];
+    var adminOrders = ordersVM.concat([
+      { id:'#MA-1041', customer:'Jonas Bauer', items:1, baseStatus:'Processing', total:'£320.00', date:'28 Jun' },
+      { id:'#MA-1040', customer:'Aiko Tanaka', items:5, baseStatus:'Shipped', total:'£842.00', date:'27 Jun' },
+      { id:'#MA-1038', customer:'Marco Rossi', items:1, baseStatus:'Cancelled', total:'£94.00', date:'25 Jun' }
+    ]).map(function(o){
+      var status = s.statusOverrides[o.id] || o.status || o.baseStatus;
+      return { id:o.id, customer:o.customer||'Elise Moreau', items:o.items, total:o.total, date:o.date,
+        status:status, badgeStyle:self.badgeStyle(status), menuOpen: s.statusMenuFor === o.id,
+        toggleMenu: (function(id){ return function(e){ if(e&&e.stopPropagation)e.stopPropagation(); self.toggleStatusMenu(id); }; })(o.id),
+        options: STATUSES.map(function(st){ return { label:st, badge:self.badgeStyle(st),
+          choose:(function(id,stt){ return function(e){ if(e&&e.stopPropagation)e.stopPropagation(); self.setOrderStatus(id, stt); }; })(o.id, st),
+          rowStyle:'display:flex;align-items:center;gap:9px;padding:8px 12px;cursor:pointer;background:'+(st===status?'var(--surface-2)':'transparent') }; }) };
+    });
+
+    var salesMap = {};
+    Object.keys(self.SALES_BASE).forEach(function(k){ salesMap[k] = self.SALES_BASE[k]; });
+    (s.orders || self.seedOrders()).forEach(function(o){ (o.thumbs||[]).forEach(function(id){ salesMap[id] = (salesMap[id]||0) + 4; }); });
+    var topList = ALL.map(function(p){ return { name:p.name, units: salesMap[p.id]||0, img:self.img(p.photo,80,100) }; })
+      .sort(function(a,b){ return b.units - a.units; }).slice(0,5);
+    var maxUnits = (topList[0] && topList[0].units) || 1;
+    var topSellers = topList.map(function(t){ return { name:t.name, units:t.units + ' sold', img:t.img,
+      barStyle:'height:6px;border-radius:3px;background:#C8203F;width:'+Math.max(6,Math.round((t.units/maxUnits)*100))+'%' }; });
+
+    var navStyle = function(on){ return 'display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:6px;cursor:pointer;font:500 14px \'Hanken Grotesk\';'+(on?'background:rgba(200,32,63,.12);color:#E0394F':'color:var(--text-2)'); };
+
+    var portal = s.portal || 'customer';
+    var tabBase = 'flex:1;text-align:center;padding:9px 0;border-radius:4px;cursor:pointer;font:600 13px \'Hanken Grotesk\';';
+    var tabOn = 'background:#C8203F;color:#fff;';
+    var tabOff = 'color:var(--text-muted);background:transparent;';
+    var navItem = function(active){ return 'cursor:pointer;'+(active?'color:var(--text)':'color:var(--text-2)'); };
+
+    return {
+      isLogin: screen === 'login',
+      isSignup: screen === 'signup',
+
+      theme: s.theme, isDark: s.theme !== 'light', isLight: s.theme === 'light',
+      toggleTheme: function(){ self.toggleTheme(); },
+
+      portalCustomer: portal === 'customer', portalAdmin: portal === 'admin',
+      tabCustomer: tabBase + (portal === 'customer' ? tabOn : tabOff),
+      tabAdmin: tabBase + (portal === 'admin' ? tabOn : tabOff),
+      selCustomer: function(){ self.setState({ portal: 'customer' }); },
+      selAdmin: function(){ self.setState({ portal: 'admin' }); },
+      loginTitle: portal === 'admin' ? 'Admin sign in' : 'Welcome back',
+      loginSubtitle: portal === 'admin' ? 'Access the Maison console' : 'Sign in to continue shopping',
+      loginEmail: portal === 'admin' ? 'admin@maison.com' : 'elise.moreau@gmail.com',
+      signInLabel: portal === 'admin' ? 'Sign in to console' : 'Sign in',
+      signIn: function(){ self.go(portal === 'admin' ? 'admin-dash' : 'catalog'); },
+
+      navNewIn: navItem(s.activeCat === 'All'), navDresses: navItem(s.activeCat === 'Dresses'),
+      navOuterwear: navItem(s.activeCat === 'Outerwear'), navKnitwear: navItem(s.activeCat === 'Knitwear'),
+      goNewIn: function(){ self.setState({ activeCat: 'All', screen: 'catalog' }); },
+      goDresses: function(){ self.setState({ activeCat: 'Dresses', screen: 'catalog' }); },
+      goOuterwear: function(){ self.setState({ activeCat: 'Outerwear', screen: 'catalog' }); },
+      goKnitwear: function(){ self.setState({ activeCat: 'Knitwear', screen: 'catalog' }); },
+      inStore: storeScreens.indexOf(screen) >= 0,
+      inAdmin: adminScreens.indexOf(screen) >= 0,
+      isCatalog: screen === 'catalog', isProduct: screen === 'product', isCart: screen === 'cart',
+      isCheckout: screen === 'checkout', isConfirm: screen === 'confirm', isOrders: screen === 'orders',
+      isShipping: screen === 'shipping', isReturns: screen === 'returns', isContact: screen === 'contact',
+      isAdminDash: screen === 'admin-dash', isAdminProducts: screen === 'admin-products', isAdminOrders: screen === 'admin-orders',
+
+      products: filtered.map(mapCard),
+      productCountLabel: totalMatched + ' products',
+      categories: categories,
+      search: s.search,
+      onSearch: function(e){ self.setSearch(e.target.value); },
+      sortLabel: sortLabels[s.sort] || 'Newest',
+      sortOpen: s.sortOpen,
+      toggleSort: function(e){ if(e&&e.stopPropagation)e.stopPropagation(); self.toggleSortMenu(); },
+      sortOptions: sortOptions,
+      priceMinLabel: '£'+s.priceMin, priceMaxLabel: '£'+s.priceMax,
+      priceBarStyle: 'position:absolute;left:'+minPct+'%;right:'+(100-maxPct)+'%;height:3px;background:#C8203F;border-radius:2px',
+      priceMinHandle: handleBase+'left:'+minPct+'%',
+      priceMaxHandle: handleBase+'left:'+maxPct+'%',
+      onDragMin: function(e){ self.startPriceDrag('min', e); },
+      onDragMax: function(e){ self.startPriceDrag('max', e); },
+      pageBtns: pageBtns, hasPages: pageCount > 1,
+      prevPage: function(){ if(page>1) self.goPage(page-1); },
+      nextPage: function(){ if(page<pageCount) self.goPage(page+1); },
+      prevStyle: navBtn(page>1), nextStyle: navBtn(page<pageCount),
+      pageInfo: 'Page '+page+' of '+pageCount,
+      categories: categories,
+      sel: selVM, recommended: recommended, sizes: sizes,
+      qty: s.qty,
+      incQty: function(){ self.setState({ qty: s.qty + 1 }); },
+      decQty: function(){ self.setState({ qty: Math.max(1, s.qty - 1) }); },
+      addToCart: function(){ self.addToCart(); },
+
+      cart: cartVM, cartHasItems: count > 0, cartEmpty: count === 0,
+      cartCount: count, cartCountLabel: count + (count === 1 ? ' item' : ' items'),
+      subtotalLabel: this.gbp(sub), taxLabel: this.gbp(sub * 0.2), totalLabel: this.gbp(sub * 1.2),
+      payLabel: 'Pay ' + this.gbp(sub * 1.2),
+
+      orders: ordersVM, lastOrderId: s.lastOrderId || '#MA-1042',
+      adminProducts: adminProducts, adminOrders: adminOrders,
+
+      openAddProduct: function(){ self.openAddProduct(); },
+      editProduct: function(){ self.openEditProduct(s.adminSelId); },
+      deleteProduct: function(){ self.deleteProduct(s.adminSelId); },
+      uploadImage: function(e){ self.uploadImage(e); },
+      addModalTitle: s.editId != null ? 'Edit product' : 'Add product',
+      saveLabel: s.editId != null ? 'Save changes' : 'Save product',
+      topSellers: topSellers,
+      stopProp: function(e){ if (e && e.stopPropagation) e.stopPropagation(); },
+      closeModal: function(){ self.closeModal(); },
+      saveProduct: function(){ self.saveProduct(); },
+      showAddModal: s.modal === 'add',
+      showViewModal: s.modal === 'view' && !!adminView,
+      adminView: adminView,
+      formName: s.form.name, formCat: s.form.cat, formPrice: s.form.price, formStock: s.form.stock, formPhoto: s.form.photo, formDesc: s.form.desc,
+      onFormName: function(e){ self.setForm('name', e.target.value); },
+      onFormCat: function(e){ self.setForm('cat', e.target.value); },
+      onFormPrice: function(e){ self.setForm('price', e.target.value); },
+      onFormStock: function(e){ self.setForm('stock', e.target.value); },
+      onFormPhoto: function(e){ self.setForm('photo', e.target.value); },
+      onFormDesc: function(e){ self.setForm('desc', e.target.value); },
+
+      shippingRows: this.SHIPPING_ROWS, shippingFaq: this.SHIPPING_FAQ,
+      returnSteps: this.RETURN_STEPS, returnEligible: this.RETURN_ELIGIBLE, returnIneligible: this.RETURN_INELIGIBLE,
+
+      agree: s.agree,
+      agreeBoxStyle: 'width:20px;height:20px;flex-shrink:0;border-radius:4px;display:flex;align-items:center;justify-content:center;border:1px solid '+(s.agree?'#C9A24B':'var(--line-30)')+';background:'+(s.agree?'#C9A24B':'transparent'),
+      toggleAgree: function(){ self.setState({ agree: !s.agree }); },
+
+      contactSent: s.contactSent, contactNotSent: !s.contactSent,
+      submitContact: function(){ self.setState({ contactSent: true }); },
+      resetContact: function(){ self.setState({ contactSent: false }); },
+
+      navDash: navStyle(screen === 'admin-dash'),
+      navProducts: navStyle(screen === 'admin-products'),
+      navOrders: navStyle(screen === 'admin-orders'),
+
+      goLogin: function(){ self.go('login'); }, goSignup: function(){ self.go('signup'); }, goCatalog: function(){ self.go('catalog'); },
+      goCart: function(){ self.go('cart'); }, goCheckout: function(){ self.go('checkout'); },
+      goOrders: function(){ self.go('orders'); }, placeOrder: function(){ self.placeOrder(); },
+      goShipping: function(){ self.go('shipping'); }, goReturns: function(){ self.go('returns'); },
+      goContact: function(){ self.setState({ screen: 'contact', contactSent: false }); },
+      goAdmin: function(){ self.go('admin-dash'); }, goAdminProducts: function(){ self.go('admin-products'); }, goAdminOrders: function(){ self.go('admin-orders'); },
+
+      showToast: !!s.toast, toastText: s.toast || '', toastTitle: s.toastTitle || 'Added to bag', toastView: s.toastView === true
+    };
+  }
+}
+</script>
+<script>
+// GENERATED from dc-runtime/src/*.ts — do not edit. Rebuild with `cd dc-runtime && bun run build`.
+"use strict";
+(() => {
+  var __defProp = Object.defineProperty;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+  var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+
+  // src/react.ts
+  function getReact() {
+    const R = window.React;
+    if (!R) throw new Error("dc-runtime: window.React is not available yet");
+    return R;
+  }
+  function getReactDOM() {
+    const RD = window.ReactDOM;
+    if (!RD) throw new Error("dc-runtime: window.ReactDOM is not available yet");
+    return RD;
+  }
+  var h = ((...args) => getReact().createElement(
+    ...args
+  ));
+
+  // src/parse.ts
+  function parseDcDocument(doc) {
+    const dc = doc.querySelector("x-dc");
+    if (!dc) return null;
+    const scriptEl = doc.querySelector("script[data-dc-script]");
+    const { props, preview } = parseDataProps(
+      scriptEl?.getAttribute("data-props") ?? null
+    );
+    return {
+      template: dc.innerHTML,
+      js: scriptEl ? scriptEl.textContent || "" : "",
+      props,
+      preview
+    };
+  }
+  function parseDcText(src) {
+    const openMatch = /<x-dc(?:\s[^>]*)?>/.exec(src);
+    if (!openMatch) return null;
+    const close = src.lastIndexOf("</x-dc>");
+    if (close === -1 || close < openMatch.index) return null;
+    const template = src.slice(openMatch.index + openMatch[0].length, close);
+    const doc = new DOMParser().parseFromString(src, "text/html");
+    const scriptEl = doc.querySelector("script[data-dc-script]");
+    const { props, preview } = parseDataProps(
+      scriptEl?.getAttribute("data-props") ?? null
+    );
+    return {
+      template,
+      js: scriptEl ? scriptEl.textContent || "" : "",
+      props,
+      preview
+    };
+  }
+  function parseDataProps(raw) {
+    if (!raw) return { props: null, preview: null };
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      return { props: null, preview: null };
+    }
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { props: null, preview: null };
+    }
+    const obj = parsed;
+    const preview = obj.$preview && typeof obj.$preview === "object" ? obj.$preview : null;
+    const rest = {};
+    for (const k of Object.keys(obj)) {
+      if (k[0] !== "$") rest[k] = obj[k];
+    }
+    return { props: Object.keys(rest).length ? rest : null, preview };
+  }
+  function dcNameFromPath(pathname) {
+    let p = pathname || "";
+    try {
+      p = decodeURIComponent(p);
+    } catch {
+    }
+    const base = p.split("/").pop() || "Root";
+    return base.replace(/\.dc\.html$/, "").replace(/\.html?$/, "") || "Root";
+  }
+
+  // src/boot.ts
+  var BASE_CSS = `
+    .sc-placeholder{background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;overflow:hidden}
+    @keyframes sc-shine{0%{background-position:100% 50%}100%{background-position:0% 50%}}
+    html.sc-dc-streaming .sc-placeholder,
+    html.sc-dc-streaming .sc-interp.sc-missing{position:relative;
+      background:color-mix(in srgb,currentColor 5%,transparent);
+      border-color:transparent}
+    html.sc-dc-streaming .sc-placeholder::before,
+    html.sc-dc-streaming .sc-interp.sc-missing::before{content:'';
+      position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(90deg,rgba(217,119,87,0) 25%,rgba(247,225,211,.95) 37%,rgba(217,119,87,0) 63%);
+      background-size:400% 100%;animation:sc-shine 1.4s ease infinite}
+    html.sc-dc-streaming .sc-placeholder:nth-child(n+9 of .sc-placeholder)::before,
+    html.sc-dc-streaming .sc-interp.sc-missing:nth-child(n+9 of .sc-interp.sc-missing)::before{animation:none;
+      background:color-mix(in srgb,currentColor 8%,transparent)}
+    .sc-placeholder-error{padding:4px 8px;font:11px/1.4 ui-monospace,monospace;
+      color:rgba(0,0,0,.7);word-break:break-word}
+    .sc-interp.sc-missing{display:inline-block;width:2em;height:1em;overflow:hidden;
+      vertical-align:text-bottom;background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;color:transparent;
+      user-select:none}
+    .sc-interp.sc-unresolved{font-family:ui-monospace,monospace;font-size:.85em;
+      color:rgba(0,0,0,.5);background:rgba(0,0,0,.05);border-radius:3px;
+      padding:0 3px}
+    .sc-host.sc-has-error{position:relative}
+    .sc-logic-error{position:absolute;top:8px;left:8px;z-index:2147483647;max-width:60ch;
+      padding:6px 10px;background:#b00020;color:#fff;font:12px/1.4 ui-monospace,monospace;
+      border-radius:4px;white-space:pre-wrap;pointer-events:none}
+    /* Mirrors PRINT_BASELINE_CSS in apps/web deck-stage-export.ts \u2014 keep both
+       in sync until dc-runtime regains a build step. */
+    @media print {
+      @page { margin: 0.5cm; }
+      figure, table { break-inside: avoid; }
+      #dc-root, #dc-root > .sc-host { height: auto; }
+      *, *::before, *::after {
+        print-color-adjust: exact; -webkit-print-color-adjust: exact;
+        backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+        animation-delay: -99s !important; animation-duration: .001s !important;
+        animation-iteration-count: 1 !important; animation-fill-mode: both !important;
+        animation-play-state: running !important; transition-duration: 0s !important;
+      }
+    }
+  `;
+  var FULL_PAGE_CSS = "html,body{height:100%;margin:0}#dc-root,#dc-root>.sc-host{height:100%}";
+  function rootNameForDocument(doc, loc) {
+    let bootPath = loc.pathname || "";
+    if (!/\.dc\.html?$/i.test(safeDecode(bootPath))) {
+      try {
+        bootPath = new URL(doc.baseURI || "/").pathname;
+      } catch {
+      }
+    }
+    return dcNameFromPath(bootPath);
+  }
+  function safeDecode(s) {
+    try {
+      return decodeURIComponent(s);
+    } catch {
+      return s;
+    }
+  }
+  function boot(runtime, doc = document) {
+    const parsed = parseDcDocument(doc);
+    if (!parsed) return null;
+    const React = getReact();
+    const rootName = rootNameForDocument(doc, location);
+    runtime.markFetched(rootName);
+    runtime.setRootName(rootName);
+    runtime.adoptParsed(rootName, parsed);
+    fetch(location.href).then((res) => res.ok ? res.text() : "").then((t) => {
+      const raw = t ? parseDcText(t) : null;
+      if (raw?.template) runtime.updateHtml(rootName, raw.template);
+    }).catch(() => {
+    });
+    const dc = doc.querySelector("x-dc");
+    const hostEl = doc.createElement("div");
+    hostEl.id = "dc-root";
+    dc.replaceWith(hostEl);
+    if (!parsed.preview) {
+      const s = doc.createElement("style");
+      s.textContent = FULL_PAGE_CSS;
+      doc.head.appendChild(s);
+    }
+    const Root = runtime.getDC(rootName);
+    const entry = runtime.registry.get(rootName);
+    function StandaloneRoot() {
+      const [, setTick] = React.useState(0);
+      React.useEffect(() => {
+        const sub = () => setTick((n) => n + 1);
+        entry.subs.add(sub);
+        return () => {
+          entry.subs.delete(sub);
+        };
+      }, []);
+      const defaults = React.useMemo(() => {
+        const d = {};
+        for (const k in entry.propsMeta || {}) {
+          const v = entry.propsMeta?.[k]?.default;
+          if (v !== void 0) d[k] = v;
+        }
+        return d;
+      }, [entry.propsMeta]);
+      return h(Root, { ...defaults, ...entry.propOverrides || {} });
+    }
+    const ReactDOM = getReactDOM();
+    if (ReactDOM.createRoot)
+      ReactDOM.createRoot(hostEl).render(h(StandaloneRoot));
+    else ReactDOM.render(h(StandaloneRoot), hostEl);
+    return rootName;
+  }
+
+  // src/expr.ts
+  var IDENT_RE = /^[A-Za-z_$][A-Za-z0-9_$]*/;
+  var NUMBER_RE = /^-?\d+(\.\d+)?$/;
+  function resolve(vals, src) {
+    const expr = String(src).trim();
+    if (!expr) return void 0;
+    if (expr[0] === "(" && expr[expr.length - 1] === ")" && parensWrapWhole(expr)) {
+      return resolve(vals, expr.slice(1, -1));
+    }
+    const eq = findTopLevelEquality(expr);
+    if (eq) {
+      const lv = resolve(vals, expr.slice(0, eq.index));
+      const rv = resolve(vals, expr.slice(eq.index + eq.op.length));
+      switch (eq.op) {
+        case "===":
+          return lv === rv;
+        case "!==":
+          return lv !== rv;
+        case "==":
+          return lv == rv;
+        default:
+          return lv != rv;
+      }
+    }
+    if (expr[0] === "!") return !resolve(vals, expr.slice(1));
+    if (expr === "true") return true;
+    if (expr === "false") return false;
+    if (expr === "null") return null;
+    if (expr === "undefined") return void 0;
+    if (NUMBER_RE.test(expr)) return Number(expr);
+    if (expr.length >= 2 && (expr[0] === '"' || expr[0] === "'") && expr[expr.length - 1] === expr[0]) {
+      return expr.slice(1, -1);
+    }
+    return resolvePath(vals, expr);
+  }
+  function parensWrapWhole(expr) {
+    let depth = 0;
+    for (let i = 0; i < expr.length - 1; i++) {
+      if (expr[i] === "(") depth++;
+      else if (expr[i] === ")") {
+        depth--;
+        if (depth === 0) return false;
+      }
+    }
+    return true;
+  }
+  function findTopLevelEquality(expr) {
+    let depth = 0;
+    for (let i = 0; i < expr.length; i++) {
+      const c = expr[i];
+      if (c === "[" || c === "(") depth++;
+      else if (c === "]" || c === ")") depth--;
+      else if (depth === 0 && (c === "=" || c === "!") && expr[i + 1] === "=") {
+        if (i > 0 && (expr[i - 1] === "=" || expr[i - 1] === "!")) continue;
+        if (!expr.slice(0, i).trim()) continue;
+        const op = expr[i + 2] === "=" ? c + "==" : c + "=";
+        return { index: i, op };
+      }
+    }
+    return null;
+  }
+  function resolvePath(vals, expr) {
+    const head = expr.match(IDENT_RE);
+    if (!head) return void 0;
+    let cur = vals == null ? void 0 : vals[head[0]];
+    let i = head[0].length;
+    while (i < expr.length) {
+      if (expr[i] === ".") {
+        const m = expr.slice(i + 1).match(IDENT_RE) || expr.slice(i + 1).match(/^\d+/);
+        if (!m) return void 0;
+        cur = cur == null ? void 0 : cur[m[0]];
+        i += 1 + m[0].length;
+      } else if (expr[i] === "[") {
+        let depth = 1;
+        let j = i + 1;
+        while (j < expr.length && depth > 0) {
+          if (expr[j] === "[") depth++;
+          else if (expr[j] === "]") {
+            depth--;
+            if (depth === 0) break;
+          }
+          j++;
+        }
+        if (depth !== 0) return void 0;
+        const key = resolve(vals, expr.slice(i + 1, j));
+        cur = cur == null ? void 0 : cur[key];
+        i = j + 1;
+      } else {
+        return void 0;
+      }
+    }
+    return cur;
+  }
+
+  // src/encode.ts
+  var CAMEL_ATTR = "sc-camel-";
+  var RAW_WRAP = {
+    select: "sc-raw-select",
+    table: "sc-raw-table",
+    tbody: "sc-raw-tbody",
+    thead: "sc-raw-thead",
+    tfoot: "sc-raw-tfoot",
+    tr: "sc-raw-tr",
+    td: "sc-raw-td",
+    th: "sc-raw-th",
+    caption: "sc-raw-caption"
+  };
+  var RAW_UNWRAP = Object.fromEntries(
+    Object.entries(RAW_WRAP).map(([k, v]) => [v, k])
+  );
+  var EVENT_MAP = {
+    onclick: "onClick",
+    onchange: "onChange",
+    oninput: "onInput",
+    onsubmit: "onSubmit",
+    onkeydown: "onKeyDown",
+    onkeyup: "onKeyUp",
+    onkeypress: "onKeyPress",
+    onmousedown: "onMouseDown",
+    onmouseup: "onMouseUp",
+    onmouseenter: "onMouseEnter",
+    onmouseleave: "onMouseLeave",
+    onfocus: "onFocus",
+    onblur: "onBlur",
+    ondoubleclick: "onDoubleClick",
+    oncontextmenu: "onContextMenu"
+  };
+  var ATTRS = `(?:[^>"']|"[^"]*"|'[^']*')*`;
+  var IMPORT_SELF_CLOSE_RE = new RegExp(
+    "<(x-import|dc-import)(" + ATTRS + ")/>",
+    "gi"
+  );
+  var CAMEL_ATTR_RE = /(\s)([a-z]+[A-Z][A-Za-z0-9]*)(\s*=)/g;
+  function encodeCase(html) {
+    html = html.replace(
+      IMPORT_SELF_CLOSE_RE,
+      (_, t, a) => "<" + t + a + "></" + t + ">"
+    );
+    html = html.replace(/<helmet(\s|>)/gi, "<sc-helmet$1");
+    html = html.replace(/<\/helmet\s*>/gi, "</sc-helmet>");
+    html = html.replace(
+      CAMEL_ATTR_RE,
+      (_, sp, name, eq) => sp + CAMEL_ATTR + name.replace(/[A-Z]/g, (c) => "-" + c.toLowerCase()) + eq
+    );
+    for (const [real, alias] of Object.entries(RAW_WRAP)) {
+      html = html.replace(
+        new RegExp("(</?)" + real + "(?=[\\s>])", "gi"),
+        "$1" + alias
+      );
+    }
+    return html;
+  }
+  function kebabToCamel(s) {
+    return s.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+  }
+  function cssToObj(css) {
+    const o = {};
+    for (const decl of css.split(";")) {
+      const i = decl.indexOf(":");
+      if (i < 0) continue;
+      const prop = decl.slice(0, i).trim();
+      o[prop.startsWith("--") ? prop : kebabToCamel(prop)] = decl.slice(i + 1).trim();
+    }
+    return o;
+  }
+  function compileAttr(raw) {
+    const whole = raw.match(/^\s*\{\{([\s\S]+?)\}\}\s*$/);
+    if (whole) {
+      const path = whole[1];
+      return (vals) => resolve(vals, path);
+    }
+    if (raw.includes("{{")) {
+      const parts = raw.split(/\{\{([\s\S]+?)\}\}/g);
+      return (vals) => parts.map((s, i) => i & 1 ? resolve(vals, s) ?? "" : s).join("");
+    }
+    return () => raw;
+  }
+
+  // src/compile.ts
+  function collectProps(node, kind, host) {
+    const propGetters = [];
+    const pseudoClasses = [];
+    let hintSize = null;
+    for (const { name, value } of [...node.attributes]) {
+      if (name === "sc-name" || name === "data-dc-tpl") continue;
+      let key = name;
+      if (key.startsWith(CAMEL_ATTR))
+        key = kebabToCamel(key.slice(CAMEL_ATTR.length));
+      if (key === "hint-size") {
+        hintSize = value;
+        continue;
+      }
+      if (key.startsWith("style-")) {
+        pseudoClasses.push(host.pseudoClass(key.slice(6), value));
+        continue;
+      }
+      if (kind !== "dom") {
+        if (key.includes("-") && !(kind === "x-import" && (key.startsWith("aria-") || key.startsWith("data-"))))
+          key = kebabToCamel(key);
+      } else {
+        if (key === "class") key = "className";
+        else if (key === "for") key = "htmlFor";
+        else if (key.startsWith("on"))
+          key = EVENT_MAP[key] || "on" + key[2].toUpperCase() + key.slice(3);
+      }
+      propGetters.push([key, compileAttr(value)]);
+    }
+    return { propGetters, pseudoClasses, hintSize };
+  }
+  var HOST_STYLE_PROPS = /* @__PURE__ */ new Set([
+    "position",
+    "left",
+    "right",
+    "top",
+    "bottom",
+    "inset",
+    "width",
+    "height",
+    "z-index",
+    "transform"
+  ]);
+  function hostPositionStyle(style) {
+    const all = typeof style === "string" ? cssToObj(style) : style != null && typeof style === "object" ? style : null;
+    if (!all) return void 0;
+    const out = {};
+    for (const [k, v] of Object.entries(all)) {
+      const kebab = k.replace(/[A-Z]/g, (c) => "-" + c.toLowerCase());
+      if (HOST_STYLE_PROPS.has(kebab)) out[k] = v;
+    }
+    return Object.keys(out).length ? out : void 0;
+  }
+  function compileTemplate(html, host) {
+    const tpl = document.createElement("template");
+    //! nosemgrep: direct-inner-html-assignment
+    tpl.innerHTML = encodeCase(html);
+    let tplN = 0;
+    (function stamp(node) {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        node.setAttribute("data-dc-tpl", String(tplN++));
+      }
+      for (const c of node.childNodes) stamp(c);
+    })(tpl.content);
+    const builders = walkChildren(tpl.content, host);
+    const render = ((vals, ctx) => builders.map((b, i) => b(vals || {}, ctx, i)));
+    render.__annotated = tpl.innerHTML;
+    return render;
+  }
+  function walkChildren(node, host) {
+    return [...node.childNodes].map((c) => walk(c, host)).filter((b) => b != null);
+  }
+  function walk(node, host) {
+    if (node.nodeType === Node.TEXT_NODE) return walkText(node);
+    if (node.nodeType !== Node.ELEMENT_NODE) return null;
+    const el = node;
+    const tag = el.tagName.toLowerCase();
+    if (tag === "sc-for") return walkFor(el, host);
+    if (tag === "sc-if") return walkIf(el, host);
+    if (tag === "x-import") return walkXImport(el, host);
+    if (tag === "sc-helmet") return host.helmet(el);
+    if (tag === "dc-import") return walkComponent(el, host);
+    return walkElement(el, host);
+  }
+  var warnedHoles = /* @__PURE__ */ new Set();
+  function warnUnresolved(ctx, what) {
+    const key = (ctx?.__name || "?") + "\0" + what;
+    if (warnedHoles.has(key)) return;
+    warnedHoles.add(key);
+    console.warn("[dc-runtime] " + (ctx?.__name || "template") + ": " + what);
+  }
+  function walkText(node) {
+    const txt = node.nodeValue ?? "";
+    if (!txt.includes("{{")) {
+      if (!txt.trim() && !txt.includes(" ")) return null;
+      return () => txt;
+    }
+    const parts = txt.split(/\{\{([\s\S]+?)\}\}/g);
+    return (vals, ctx, key) => h(
+      getReact().Fragment,
+      { key },
+      ...parts.map((p, i) => {
+        if (!(i & 1)) return p;
+        const v = resolve(vals, p);
+        if (v === void 0) {
+          if (!ctx?.__streamingNow) {
+            if (document.body?.hasAttribute("data-dc-editor-on")) {
+              return h(
+                "span",
+                { key: i, className: "sc-interp sc-unresolved" },
+                "{{ " + p.trim() + " }}"
+              );
+            }
+            warnUnresolved(
+              ctx,
+              "{{ " + p.trim() + " }} never resolved \u2014 rendered as empty"
+            );
+            return null;
+          }
+          return h(
+            "span",
+            { key: i, className: "sc-interp sc-missing" },
+            p.trim()
+          );
+        }
+        if (getReact().isValidElement(v) || Array.isArray(v)) {
+          return h(getReact().Fragment, { key: i }, v);
+        }
+        if (v === null || typeof v === "boolean") return null;
+        return h("span", { key: i, className: "sc-interp" }, String(v));
+      })
+    );
+  }
+  function walkFor(el, host) {
+    const listGet = compileAttr(el.getAttribute("list") || "");
+    const asName = el.getAttribute("as") || "item";
+    const hintN = parseInt(el.getAttribute("hint-placeholder-count") || "0", 10);
+    const kids = walkChildren(el, host);
+    const listSrc = el.getAttribute("list") || "";
+    return (vals, ctx, key) => {
+      let list = listGet(vals);
+      if (!Array.isArray(list)) {
+        if (!ctx?.__streamingNow) {
+          if (list !== void 0 && list !== null) {
+            warnUnresolved(
+              ctx,
+              'sc-for list="' + listSrc + '" is not an array (' + typeof list + ")"
+            );
+          }
+          list = [];
+        } else {
+          list = hintN > 0 ? Array(hintN).fill(void 0) : [];
+        }
+      }
+      return h(
+        getReact().Fragment,
+        { key },
+        list.map((item, i) => {
+          const sub = { ...vals, [asName]: item, $index: i };
+          return h(
+            getReact().Fragment,
+            { key: i },
+            kids.map((b, j) => b(sub, ctx, j))
+          );
+        })
+      );
+    };
+  }
+  function walkIf(el, host) {
+    const valGet = compileAttr(el.getAttribute("value") || "");
+    const hintRaw = el.getAttribute("hint-placeholder-val");
+    const hintGet = hintRaw != null ? compileAttr(hintRaw) : null;
+    const kids = walkChildren(el, host);
+    return (vals, ctx, key) => {
+      let v = valGet(vals);
+      if (v === void 0 && hintGet && ctx?.__streamingNow) v = hintGet(vals);
+      return v ? h(
+        getReact().Fragment,
+        { key },
+        kids.map((b, j) => b(vals, ctx, j))
+      ) : null;
+    };
+  }
+  function walkComponent(el, host) {
+    const name = el.getAttribute("name") || el.getAttribute("component") || "";
+    el.removeAttribute("name");
+    el.removeAttribute("component");
+    const tplId = el.getAttribute("data-dc-tpl");
+    const styleRaw = el.getAttribute("style");
+    el.removeAttribute("style");
+    const styleGet = styleRaw != null ? compileAttr(styleRaw) : null;
+    const { propGetters, hintSize } = collectProps(el, "dc-import", host);
+    const kids = walkChildren(el, host);
+    return (vals, ctx, key) => {
+      const props = {
+        key,
+        __hintSize: hintSize,
+        __tplId: tplId,
+        __hostStyle: styleGet ? hostPositionStyle(styleGet(vals)) : void 0
+      };
+      for (const [k, g] of propGetters) {
+        const v = g(vals);
+        if (k === "dcProps") {
+          if (v && typeof v === "object") Object.assign(props, v);
+          continue;
+        }
+        props[k] = v;
+      }
+      if (kids.length) props.children = kids.map((b, j) => b(vals, ctx, j));
+      return h(host.component(name), props);
+    };
+  }
+  function walkXImport(el, host) {
+    const globalNameGet = compileAttr(
+      el.getAttribute("component-from-global-scope") || ""
+    );
+    const exportNameGet = compileAttr(
+      el.getAttribute("component") || el.getAttribute("name") || ""
+    );
+    const fromRaw = el.getAttribute("from") || el.getAttribute("src") || el.getAttribute("import") || "";
+    const urls = fromRaw.trim() ? fromRaw.trim().split(/\s+/) : [];
+    const url = urls.length ? urls[urls.length - 1] : "";
+    const kindOf = (u) => /\.(jsx|tsx)(\?|#|$)/i.test(u) ? "jsx" : "js";
+    const tplId = el.getAttribute("data-dc-tpl");
+    const styleRaw = el.getAttribute("style");
+    el.removeAttribute("style");
+    const styleGet = styleRaw != null ? compileAttr(styleRaw) : null;
+    const wrap = tplId != null || styleGet != null;
+    const { propGetters, hintSize } = collectProps(el, "x-import", host);
+    const hasContent = el.children.length > 0 || !!(el.textContent || "").trim();
+    const kids = hasContent ? walkChildren(el, host) : [];
+    const urlBindable = fromRaw.includes("{{");
+    if (urls.length && !urlBindable) {
+      let prev;
+      for (const u of urls) prev = host.loadExternal(kindOf(u), u, prev);
+    }
+    const evalName = (g, vals) => {
+      const v = g(vals);
+      const s = v == null ? "" : String(v);
+      return s.includes("{{") ? "" : s;
+    };
+    return (vals, ctx, key) => {
+      const globalName = evalName(globalNameGet, vals);
+      const name = globalName || evalName(exportNameGet, vals);
+      const C = !name || urlBindable ? null : globalName ? host.resolveExternalGlobal(url, globalName) : host.resolveExternal(url, name);
+      const hostStyle = styleGet ? hostPositionStyle(styleGet(vals)) : void 0;
+      const wrapper = wrap ? {
+        key,
+        className: "sc-host-x",
+        "data-dc-tpl": tplId,
+        style: hostStyle || { display: "contents" }
+      } : null;
+      if (!C) {
+        const error = urlBindable ? "x-import `from` cannot contain {{ \u2026 }} \u2014 module URLs are resolved at parse time; use a literal URL" : host.resolveExternalError(url, name);
+        const ph = host.placeholder({
+          key: wrapper ? void 0 : key,
+          name,
+          hintSize,
+          error
+        });
+        return wrapper ? h("div", wrapper, ph) : ph;
+      }
+      const props = wrapper ? {} : { key };
+      let unresolvedHole = false;
+      for (const [k, g] of propGetters) {
+        if (k === "component" || k === "componentFromGlobalScope" || k === "from") {
+          continue;
+        }
+        const v = g(vals);
+        if (v === void 0) unresolvedHole = true;
+        if (k === "dcProps") {
+          if (v && typeof v === "object") Object.assign(props, v);
+          continue;
+        }
+        props[k] = v;
+      }
+      if (unresolvedHole && ctx?.__htmlStreamingNow) {
+        const ph = host.placeholder({
+          key: wrapper ? void 0 : key,
+          name,
+          hintSize,
+          error: null
+        });
+        return wrapper ? h("div", wrapper, ph) : ph;
+      }
+      if (kids.length) props.children = kids.map((b, j) => b(vals, ctx, j));
+      return wrapper ? h("div", wrapper, h(C, props)) : h(C, props);
+    };
+  }
+  function walkElement(el, host) {
+    const realTag = RAW_UNWRAP[el.localName] || el.localName;
+    const tplId = el.getAttribute("data-dc-tpl");
+    const { propGetters, pseudoClasses } = collectProps(el, "dom", host);
+    const kids = walkChildren(el, host);
+    return (vals, ctx, key) => {
+      const props = { key, "data-dc-tpl": tplId };
+      for (const [k, g] of propGetters) {
+        let v = g(vals);
+        if (k === "style" && typeof v === "string") v = cssToObj(v);
+        if ((k === "value" || k === "checked") && v === void 0) {
+          v = k === "checked" ? false : "";
+        }
+        props[k] = v;
+      }
+      if (pseudoClasses.length) {
+        props.className = [props.className, ...pseudoClasses].filter(Boolean).join(" ");
+      }
+      return h(realTag, props, ...kids.map((b, j) => b(vals, ctx, j)));
+    };
+  }
+
+  // src/logic.ts
+  var StreamableLogic = class {
+    constructor(props) {
+      __publicField(this, "props");
+      __publicField(this, "state", {});
+      /** Back-pointer to the wrapper component, installed after construction. */
+      __publicField(this, "__host");
+      this.props = props || {};
+    }
+    setState(update, cb) {
+      this.__host && this.__host.__setLogicState(update, cb);
+    }
+    forceUpdate() {
+      this.__host && this.__host.forceUpdate();
+    }
+    componentDidMount() {
+    }
+    componentDidUpdate(_prevProps) {
+    }
+    componentWillUnmount() {
+    }
+    /** The flat object the template renders against (merged over props). */
+    renderVals() {
+      return {};
+    }
+  };
+  function evalDcLogic(src) {
+    //! nosemgrep: eval-and-function-constructor
+    const fn = new Function(
+      "DCLogic",
+      "StreamableLogic",
+      "React",
+      src + '\n;return (typeof Component!=="undefined"&&Component)||undefined;'
+    );
+    return fn(StreamableLogic, StreamableLogic, getReact());
+  }
+
+  // src/component.ts
+  function shallowEqual(a, b) {
+    if (!b) return false;
+    const ak = Object.keys(a).filter((k) => k !== "children");
+    const bk = Object.keys(b).filter((k) => k !== "children");
+    if (ak.length !== bk.length) return false;
+    for (const k of ak) if (a[k] !== b[k]) return false;
+    return true;
+  }
+  function Placeholder({
+    name,
+    hintSize,
+    streaming,
+    error
+  }) {
+    const [w, hgt] = (hintSize || "100%,60px").split(",");
+    return h(
+      "div",
+      {
+        className: "sc-placeholder" + (streaming ? " sc-streaming" : ""),
+        style: { width: w.trim(), height: hgt && hgt.trim() },
+        title: name
+      },
+      error ? h(
+        "div",
+        { className: "sc-placeholder-error" },
+        (name ? name + ": " : "") + error
+      ) : null
+    );
+  }
+  function hintToMin(hint) {
+    if (!hint) return void 0;
+    const [w, hgt] = hint.split(",");
+    return { minWidth: w.trim(), minHeight: hgt && hgt.trim() };
+  }
+  function createComponentFactory(registry, ensureFetched) {
+    const React = getReact();
+    const AncestorContext = React.createContext([]);
+    class StreamableComponent extends React.Component {
+      constructor(props) {
+        super(props);
+        __publicField(this, "__name");
+        __publicField(this, "__sub");
+        __publicField(this, "__needsDidMount", false);
+        /** Snapshot of the registry's streaming flags taken at render time —
+         *  builders read it off the RenderCtx (this) to pick placeholder vs
+         *  render-nothing for unresolved values. */
+        __publicField(this, "__streamingNow", false);
+        __publicField(this, "__htmlStreamingNow", false);
+        /** When a construct throws, remember the (class, registry.ver, props)
+         *  triple so render-time reconcile doesn't re-attempt it on every parent
+         *  re-render. A registry bump (new class, template, external module
+         *  resolving via bumpAll) changes `ver` and breaks the memo so an
+         *  env-dependent constructor can self-heal. */
+        __publicField(this, "__failedLogic", null);
+        __publicField(this, "__failedUserProps", null);
+        __publicField(this, "__failedVer", -1);
+        /** Per-instance constructor error — kept here (not on the registry entry)
+         *  so one instance's successful construct can't hide a sibling's failure,
+         *  and a construct can never wipe an eval error `updateJs` recorded on
+         *  `r.logicError`. */
+        __publicField(this, "__ctorError", null);
+        __publicField(this, "logic");
+        this.__name = props.__name;
+        this.state = { __v: 0, __err: null };
+        this.__sub = () => {
+          if (this.state.__err) this.setState({ __err: null });
+          this.forceUpdate();
+        };
+        this.__makeLogic(registry.get(this.__name).Logic, null);
+        ensureFetched(this.__name);
+      }
+      /** Error-boundary hook: a render crash anywhere in this DC's subtree
+       *  (its own template, an x-import'd component, a child DC without its
+       *  own deeper boundary) lands here instead of unmounting the page. */
+      static getDerivedStateFromError(e) {
+        return { __err: e instanceof Error && e.message ? e.message : String(e) };
+      }
+      componentDidCatch(e, info) {
+        console.error(
+          "[dc-runtime] render error in <" + this.__name + ">:",
+          e,
+          info?.componentStack || ""
+        );
+      }
+      /** Instantiate the logic class (or the no-op base) and adopt `prevState`
+       *  over its initial state — used both at mount and on hot-swap. */
+      __makeLogic(Logic, prevState) {
+        const L = Logic || StreamableLogic;
+        try {
+          this.logic = new L(this.__userProps());
+          this.__failedLogic = null;
+          this.__failedUserProps = null;
+          this.__ctorError = null;
+        } catch (e) {
+          console.error(e);
+          this.__failedLogic = Logic;
+          this.__failedUserProps = this.__userProps();
+          this.__failedVer = registry.get(this.__name).ver;
+          this.__ctorError = this.__name + ": " + (e instanceof Error && e.message ? e.message : String(e));
+          this.logic = new StreamableLogic(
+            this.__userProps()
+          );
+        }
+        this.logic.__host = this;
+        if (prevState)
+          this.logic.state = { ...this.logic.state || {}, ...prevState };
+      }
+      /** The props the author's logic + template see — internal __-prefixed
+       *  wiring stripped. */
+      __userProps() {
+        const { __name, __hintSize, __tplId, __hostStyle, ...rest } = this.props;
+        return rest;
+      }
+      __setLogicState(update, cb) {
+        const prev = this.logic.state;
+        const patch = typeof update === "function" ? update(prev) : update;
+        this.logic.state = { ...prev, ...patch };
+        this.setState((s) => ({ __v: s.__v + 1 }), cb);
+      }
+      /** Swap the logic instance when the registry's Logic class changed
+       *  (streaming completion, hot reload). State carries over; didMount
+       *  re-fires after the swap commits so refs exist. */
+      __reconcileLogic() {
+        const r = registry.get(this.__name);
+        const Next = r.Logic;
+        const Cur = this.logic.constructor;
+        if (Next === Cur || !Next && Cur === StreamableLogic || Next === this.__failedLogic && r.ver === this.__failedVer && shallowEqual(this.__userProps(), this.__failedUserProps)) {
+          return;
+        }
+        if (!this.__needsDidMount) {
+          try {
+            this.logic.componentWillUnmount();
+          } catch (e) {
+            console.error(e);
+          }
+        }
+        this.__makeLogic(Next, this.logic.state);
+        this.__needsDidMount = true;
+      }
+      componentDidMount() {
+        registry.get(this.__name).subs.add(this.__sub);
+        try {
+          this.logic.componentDidMount();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      componentDidUpdate(prevProps) {
+        this.logic.props = this.__userProps();
+        if (this.__needsDidMount) {
+          if (this.state.__err || !registry.get(this.__name).tpl) return;
+          this.__needsDidMount = false;
+          try {
+            this.logic.componentDidMount();
+          } catch (e) {
+            console.error(e);
+          }
+        } else {
+          try {
+            this.logic.componentDidUpdate(prevProps);
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }
+      componentWillUnmount() {
+        registry.get(this.__name).subs.delete(this.__sub);
+        if (!this.__needsDidMount) {
+          try {
+            this.logic.componentWillUnmount();
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      }
+      render() {
+        const r = registry.get(this.__name);
+        const cls = "sc-host" + (r.htmlStreaming ? " sc-streaming-html" : "") + (r.jsStreaming ? " sc-streaming-js" : "");
+        const hintStyle = r.htmlStreaming ? hintToMin(this.props.__hintSize) : void 0;
+        const hostStyle = this.props.__hostStyle || hintStyle ? { ...hintStyle || {}, ...this.props.__hostStyle || {} } : void 0;
+        const hostBase = {
+          className: cls,
+          style: hostStyle,
+          "data-sc-name": this.__name,
+          "data-dc-tpl": this.props.__tplId
+        };
+        const chain = Array.isArray(this.context) ? this.context : [];
+        if (chain.includes(this.__name)) {
+          const cycle = [
+            ...chain.slice(chain.indexOf(this.__name)),
+            this.__name
+          ].join(" \u2192 ");
+          return h(
+            "div",
+            { ...hostBase, className: cls + " sc-has-error" },
+            h(Placeholder, {
+              name: this.__name,
+              hintSize: this.props.__hintSize,
+              error: "circular import: " + cycle
+            })
+          );
+        }
+        if (this.state.__err) {
+          return h(
+            "div",
+            { ...hostBase, className: cls + " sc-has-error" },
+            h(
+              "div",
+              { className: "sc-logic-error", "data-omelette-chrome": "" },
+              this.__name + ": " + this.state.__err
+            ),
+            h(Placeholder, {
+              name: this.__name,
+              hintSize: this.props.__hintSize,
+              error: this.state.__err
+            })
+          );
+        }
+        this.__reconcileLogic();
+        if (!r.tpl) {
+          return h(
+            "div",
+            hostBase,
+            h(Placeholder, { name: this.__name, hintSize: this.props.__hintSize })
+          );
+        }
+        const userProps = this.__userProps();
+        this.logic.props = userProps;
+        let vals = userProps;
+        let renderErr = r.logicError || this.__ctorError;
+        try {
+          vals = { ...userProps, ...this.logic.renderVals() || {} };
+        } catch (e) {
+          console.error(e);
+          renderErr = this.__name + ".renderVals(): " + (e instanceof Error && e.message ? e.message : String(e));
+        }
+        this.__streamingNow = !!(r.htmlStreaming || r.jsStreaming);
+        this.__htmlStreamingNow = !!r.htmlStreaming;
+        return h(
+          "div",
+          { ...hostBase, className: cls + (renderErr ? " sc-has-error" : "") },
+          renderErr && h(
+            "div",
+            { className: "sc-logic-error", "data-omelette-chrome": "" },
+            renderErr
+          ),
+          h(
+            AncestorContext.Provider,
+            { value: [...chain, this.__name] },
+            r.tpl(vals, this)
+          )
+        );
+      }
+    }
+    __publicField(StreamableComponent, "contextType", AncestorContext);
+    const named = /* @__PURE__ */ new Map();
+    function getDC(name) {
+      const hit = named.get(name);
+      if (hit) return hit;
+      function Dispatcher(p) {
+        const [, setTick] = React.useState(0);
+        React.useEffect(() => {
+          const sub = () => setTick((n) => n + 1);
+          registry.get(name).subs.add(sub);
+          return () => {
+            registry.get(name).subs.delete(sub);
+          };
+        }, []);
+        ensureFetched(name);
+        return h(StreamableComponent, { ...p, __name: name });
+      }
+      Dispatcher.displayName = name;
+      named.set(name, Dispatcher);
+      return Dispatcher;
+    }
+    return {
+      getDC,
+      StreamableComponent
+    };
+  }
+
+  // src/external.ts
+  var isCustomElementName = (n) => !n.includes(".") && n.includes("-");
+  function isRenderableType(g) {
+    if (typeof g === "function") return !isElementClass(g);
+    return typeof g === "object" && g !== null && typeof g.$typeof === "symbol";
+  }
+  function resolveDottedPath(root, name) {
+    let cur = root;
+    for (const seg of name.split(".")) {
+      if (cur == null) return void 0;
+      cur = cur[seg];
+    }
+    return cur;
+  }
+  var BABEL_URL = "https://unpkg.com/@babel/standalone@7.26.4/babel.min.js";
+  var GLOBAL_POLL_INTERVAL_MS = 50;
+  var GLOBAL_POLL_TIMEOUT_MS = 3e4;
+  function createExternalModules(onResolved) {
+    const cache = /* @__PURE__ */ new Map();
+    let babelLoading = null;
+    const reportedMissing = /* @__PURE__ */ new Map();
+    const polling = /* @__PURE__ */ new Set();
+    function ensureBabel() {
+      if (window.Babel) return Promise.resolve();
+      if (babelLoading) return babelLoading;
+      babelLoading = new Promise((res, rej) => {
+        const s = document.createElement("script");
+        s.src = BABEL_URL;
+        s.crossOrigin = "anonymous";
+        s.onload = () => res();
+        s.onerror = rej;
+        document.head.appendChild(s);
+      });
+      return babelLoading;
+    }
+    const pending = /* @__PURE__ */ new Map();
+    function load(kind, url, after) {
+      const existing = pending.get(url);
+      if (existing) return existing;
+      cache.set(url, null);
+      console.info("[dc-runtime] x-import: loading", url, "(" + kind + ")");
+      const ready = Promise.all([
+        kind === "jsx" ? ensureBabel() : Promise.resolve(),
+        after ?? Promise.resolve()
+      ]);
+      const p = ready.then(() => fetch(url)).then((r) => {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.text();
+      }).then((src) => {
+        const code = kind === "jsx" ? window.Babel.transform(src, {
+          filename: url,
+          presets: ["react", "typescript"]
+        }).code : src;
+        const module = { exports: {} };
+        const before = new Set(Object.keys(window));
+        //! nosemgrep: eval-and-function-constructor
+        new Function("React", "module", "exports", "require", code)(
+          getReact(),
+          module,
+          module.exports,
+          () => ({})
+        );
+        const globals = {};
+        for (const k of Object.keys(window)) {
+          if (!before.has(k) && typeof window[k] === "function") {
+            globals[k] = window[k];
+          }
+        }
+        cache.set(url, { mod: module.exports, globals });
+        console.info(
+          "[dc-runtime] x-import: loaded",
+          url,
+          "\u2014 exports:",
+          Object.keys(module.exports),
+          "window globals:",
+          Object.keys(globals)
+        );
+        onResolved();
+      }).catch((e) => {
+        cache.set(url, {
+          mod: {},
+          globals: {},
+          error: "failed to load: " + (e instanceof Error && e.message ? e.message : String(e))
+        });
+        console.error(
+          "[dc-runtime] x-import: FAILED to load",
+          url,
+          "(" + kind + ")",
+          e
+        );
+        onResolved();
+      });
+      pending.set(url, p);
+      return p;
+    }
+    function resolve2(url, name) {
+      const entry = cache.get(url);
+      if (!entry) return null;
+      const { mod, globals } = entry;
+      const C = mod && mod[name] || globals && globals[name] || typeof window !== "undefined" && window[name] || mod && mod.default;
+      if (typeof C === "function") return C;
+      const key = url + "\0" + name;
+      if (!reportedMissing.has(key)) {
+        reportedMissing.set(
+          key,
+          entry.error || 'no export named "' + name + '" (has: ' + Object.keys(mod).join(", ") + ")"
+        );
+        console.error(
+          "[dc-runtime] x-import: module",
+          url,
+          "loaded but has no component named",
+          JSON.stringify(name),
+          "\u2014 available exports:",
+          Object.keys(mod),
+          "window globals:",
+          Object.keys(globals),
+          ". The module must `module.exports = {" + name + "}` or set `window." + name + "`."
+        );
+      }
+      return null;
+    }
+    function waitForGlobal(name) {
+      if (polling.has(name)) return;
+      polling.add(name);
+      const started = Date.now();
+      const isCE = isCustomElementName(name);
+      const tick = () => {
+        const found = isCE ? customElements.get(name) : isRenderableType(resolveDottedPath(window, name));
+        if (found) {
+          polling.delete(name);
+          onResolved();
+          return;
+        }
+        if (Date.now() - started >= GLOBAL_POLL_TIMEOUT_MS) {
+          console.warn(
+            "[dc-runtime] x-import: global",
+            JSON.stringify(name),
+            "never appeared on window after " + GLOBAL_POLL_TIMEOUT_MS + "ms"
+          );
+          return;
+        }
+        setTimeout(tick, GLOBAL_POLL_INTERVAL_MS);
+      };
+      setTimeout(tick, GLOBAL_POLL_INTERVAL_MS);
+    }
+    function resolveGlobal(url, name) {
+      const isCE = isCustomElementName(name);
+      if (!url) {
+        if (isCE) {
+          if (customElements.get(name)) return name;
+          waitForGlobal(name);
+          return null;
+        }
+        const g2 = resolveDottedPath(window, name);
+        if (isRenderableType(g2)) return g2;
+        waitForGlobal(name);
+        return null;
+      }
+      const entry = cache.get(url);
+      if (!entry) return null;
+      if (isCE && customElements.get(name)) return name;
+      const g = entry.globals[name] ?? resolveDottedPath(window, name);
+      if (isRenderableType(g)) return g;
+      if (name.includes(".")) return null;
+      const key = url + "\0global\0" + name;
+      if (!reportedMissing.has(key)) {
+        reportedMissing.set(key, null);
+        if (isCE && !customElements.get(name)) {
+          console.warn(
+            "[dc-runtime] x-import:",
+            url,
+            "loaded but no custom element",
+            JSON.stringify(name),
+            "is registered and window." + name + " is not a function \u2014 rendering <" + name + "> as an unknown element."
+          );
+        }
+      }
+      return name;
+    }
+    function getError(url, name) {
+      const entry = cache.get(url);
+      if (entry?.error) return entry.error;
+      return reportedMissing.get(url + "\0" + name) || null;
+    }
+    return { load, resolve: resolve2, resolveGlobal, getError };
+  }
+  function isElementClass(g) {
+    try {
+      return typeof g === "function" && typeof HTMLElement !== "undefined" && g.prototype instanceof HTMLElement;
+    } catch {
+      return false;
+    }
+  }
+
+  // src/atomics.ts
+  var ATOMIC_CSS = (
+    // layout
+    ".fx{display:flex}.col{display:flex;flex-direction:column}.grid{display:grid}.ac{align-items:center}.jc{justify-content:center}.jb{justify-content:space-between}.f1{flex:1}.noshrink{flex-shrink:0}.wrap{flex-wrap:wrap}.fw5{font-weight:500}.fw6{font-weight:600}.fw7{font-weight:700}.fw8{font-weight:800}.fs11{font-size:11px}.fs12{font-size:12px}.fs13{font-size:13px}.fs14{font-size:14px}.fs15{font-size:15px}.fs16{font-size:16px}.fs20{font-size:20px}.fs22{font-size:22px}.upper{text-transform:uppercase}.tc{text-align:center}.nowrap{white-space:nowrap}.gap8{gap:8px}.gap10{gap:10px}.gap12{gap:12px}.gap16{gap:16px}.gap24{gap:24px}.m0{margin:0}.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.posrel{position:relative}.posabs{position:absolute}.round{border-radius:50%}.ohide{overflow:hidden}.bbox{box-sizing:border-box}.pointer{cursor:pointer}.w100{width:100%}.b0{border:none}"
+  );
+
+  // src/helmet.ts
+  var DESIGN_DOC_MODE_RE = /<meta\b[^>]*\bname\s*=\s*["']design_doc_mode["'][^>]*\b(?:content|value)\s*=\s*["'](\w+)["']/i;
+  var CANVAS_BG = "#f0eee9";
+  function createHelmetManager(doc, isStreaming) {
+    const mounted = /* @__PURE__ */ new Set();
+    const live = /* @__PURE__ */ new Map();
+    let designDocMode = null;
+    let canvasStyleEl = null;
+    function postDesignMode(mode) {
+      if (window.parent === window) return;
+      try {
+        window.parent.postMessage({ type: "__dc_design_mode", mode }, "*");
+      } catch {
+      }
+    }
+    function setDesignDocMode(mode) {
+      if (mode === designDocMode) return;
+      designDocMode = mode;
+      postDesignMode(mode);
+      if (mode === "canvas") {
+        doc.documentElement.setAttribute("data-dc-canvas", "");
+        canvasStyleEl = doc.createElement("style");
+        canvasStyleEl.setAttribute("data-dc-canvas", "");
+        canvasStyleEl.textContent = `html,body{background:${CANVAS_BG}}#dc-root>.sc-host{position:relative}`;
+        doc.head.appendChild(canvasStyleEl);
+      } else {
+        doc.documentElement.removeAttribute("data-dc-canvas");
+        canvasStyleEl?.remove();
+        canvasStyleEl = null;
+      }
+    }
+    window.addEventListener("message", (e) => {
+      if (!designDocMode || (e.data && e.data.type) !== "__dc_probe") return;
+      postDesignMode(designDocMode);
+    });
+    function compile(node) {
+      const raw = [...node.children];
+      const helmetClosed = node.nextSibling != null || node.parentNode?.nextSibling != null;
+      if (node.hasAttribute("data-dc-atomics") && !mounted.has("__dc-atomics")) {
+        mounted.add("__dc-atomics");
+        const el = doc.createElement("style");
+        el.id = "__dc-atomics";
+        el.textContent = ATOMIC_CSS;
+        doc.head.appendChild(el);
+      }
+      return (_vals, ctx) => {
+        const name = ctx && ctx.__name || "";
+        const streaming = !!(name && isStreaming(name));
+        for (let i = 0; i < raw.length; i++) {
+          const child = raw[i];
+          const tag = child.tagName;
+          const mayBePartial = streaming && !helmetClosed && i === raw.length - 1;
+          if (tag === "SCRIPT") {
+            if (mayBePartial) continue;
+            const key = "SCRIPT|" + (child.getAttribute("src") || child.textContent || "");
+            if (mounted.has(key)) continue;
+            mounted.add(key);
+            const el = doc.createElement("script");
+            for (const { name: an, value } of [...child.attributes])
+              el.setAttribute(an, value);
+            if (child.textContent) el.textContent = child.textContent;
+            doc.head.appendChild(el);
+          } else if (tag === "LINK" || tag === "META") {
+            if (mayBePartial) continue;
+            const key = tag + "|" + (child.getAttribute("href") || child.getAttribute("src") || child.outerHTML);
+            if (mounted.has(key)) continue;
+            mounted.add(key);
+            doc.head.appendChild(child.cloneNode(true));
+          } else {
+            const key = name + "|" + i;
+            let el = live.get(key);
+            if (!el || el.tagName !== tag) {
+              if (el) el.remove();
+              el = doc.createElement(tag.toLowerCase());
+              live.set(key, el);
+              doc.head.appendChild(el);
+            }
+            for (const { name: an, value } of [...child.attributes]) {
+              if (el.getAttribute(an) !== value) el.setAttribute(an, value);
+            }
+            if (el.textContent !== child.textContent)
+              el.textContent = child.textContent;
+          }
+        }
+        return null;
+      };
+    }
+    return { compile, setDesignDocMode };
+  }
+
+  // src/pseudo.ts
+  function createPseudoSheet(doc) {
+    let el = null;
+    const cache = /* @__PURE__ */ new Map();
+    let n = 0;
+    return (pseudo, css) => {
+      const k = pseudo + "|" + css;
+      const hit = cache.get(k);
+      if (hit) return hit;
+      if (!el) {
+        el = doc.createElement("style");
+        doc.head.appendChild(el);
+      }
+      const cls = "scp" + (n++).toString(36);
+      const sel = pseudo === "before" || pseudo === "after" ? "." + cls + "::" + pseudo : "." + cls + ":" + pseudo;
+      el.sheet.insertRule(sel + "{" + css + "}", el.sheet.cssRules.length);
+      cache.set(k, cls);
+      return cls;
+    };
+  }
+
+  // src/registry.ts
+  function createRegistry() {
+    const entries = /* @__PURE__ */ Object.create(null);
+    function get(name) {
+      return entries[name] || (entries[name] = {
+        html: "",
+        tpl: null,
+        Logic: null,
+        jsStreaming: false,
+        htmlStreaming: false,
+        ver: 0,
+        subs: /* @__PURE__ */ new Set(),
+        fetched: false
+      });
+    }
+    function bump(name) {
+      const r = get(name);
+      r.ver++;
+      for (const fn of r.subs) fn();
+    }
+    return {
+      entries,
+      get,
+      bump,
+      bumpAll() {
+        for (const n in entries) bump(n);
+      }
+    };
+  }
+
+  // src/runtime.ts
+  var COMPONENT_DIR = ".";
+  function createRuntime(doc = document) {
+    const registry = createRegistry();
+    const pseudoClass = createPseudoSheet(doc);
+    const helmet = createHelmetManager(
+      doc,
+      (name) => registry.get(name).htmlStreaming
+    );
+    const external = createExternalModules(() => registry.bumpAll());
+    const factory = createComponentFactory(registry, ensureFetched);
+    const host = {
+      component: (name) => factory.getDC(name),
+      placeholder: (props) => h(Placeholder, props),
+      helmet: (node) => helmet.compile(node),
+      loadExternal: (kind, url, after) => external.load(kind, url, after),
+      resolveExternal: (url, name) => external.resolve(url, name),
+      resolveExternalGlobal: (url, name) => external.resolveGlobal(url, name),
+      resolveExternalError: (url, name) => external.getError(url, name),
+      pseudoClass
+    };
+    function ensureFetched(name) {
+      const r = registry.get(name);
+      if (r.fetched) return;
+      r.fetched = true;
+      const url = COMPONENT_DIR + "/" + encodeURIComponent(name) + ".dc.html";
+      fetch(url).then((res) => {
+        if (!res.ok) {
+          console.error(
+            "[dc-runtime] sibling fetch for <" + name + "/> failed:",
+            url,
+            "returned",
+            res.status,
+            "\u2014 the reference renders as an empty placeholder."
+          );
+          return "";
+        }
+        return res.text();
+      }).then((t) => {
+        if (!t) return;
+        const parsed = parseDcText(t);
+        if (!parsed) {
+          console.error(
+            "[dc-runtime] sibling fetch for <" + name + "/>:",
+            url,
+            "has no <x-dc> block \u2014 not a Design Component."
+          );
+          return;
+        }
+        if (parsed.props) r.propsMeta = parsed.props;
+        if (parsed.preview) r.preview = parsed.preview;
+        if (parsed.template && !r.html) updateHtml(name, parsed.template);
+        if (parsed.js && !r.Logic) updateJs(name, parsed.js);
+      }).catch(
+        (e) => console.error(
+          "[dc-runtime] sibling fetch for <" + name + "/> threw:",
+          url,
+          e
+        )
+      );
+    }
+    let rootName = null;
+    function updateHtml(name, html) {
+      const r = registry.get(name);
+      r.html = html;
+      if (name === rootName) {
+        const mode = DESIGN_DOC_MODE_RE.exec(html)?.[1] ?? null;
+        if (mode || !r.htmlStreaming) helmet.setDesignDocMode(mode);
+      }
+      try {
+        r.tpl = compileTemplate(html, host);
+      } catch (e) {
+        console.error("[dc-runtime] template compile FAILED for", name, e);
+      }
+      registry.bump(name);
+    }
+    function updateJs(name, src) {
+      const r = registry.get(name);
+      const seq = r.jsSeq = (r.jsSeq || 0) + 1;
+      try {
+        const Cls = evalDcLogic(src);
+        if (r.jsSeq !== seq) return;
+        if (typeof Cls !== "function") {
+          r.logicError = name + ".dc.html: \x3cscript data-dc-script> must define `class Component extends DCLogic`";
+        } else {
+          r.logicError = null;
+          r.Logic = Cls;
+        }
+      } catch (e) {
+        if (r.jsSeq !== seq) return;
+        console.error(
+          "[dc-runtime] logic class eval FAILED for",
+          name,
+          "\u2014 the template renders with props only.",
+          e
+        );
+        r.logicError = name + ": " + (e instanceof Error && e.message ? e.message : String(e));
+      }
+      registry.bump(name);
+    }
+    function setStreaming(name, kind, on) {
+      const r = registry.get(name);
+      if (kind === "html") r.htmlStreaming = !!on;
+      else r.jsStreaming = !!on;
+      let any = false;
+      for (const n in registry.entries) {
+        const e = registry.entries[n];
+        if (e && (e.htmlStreaming || e.jsStreaming)) {
+          any = true;
+          break;
+        }
+      }
+      doc.documentElement.classList.toggle("sc-dc-streaming", any);
+      registry.bump(name);
+    }
+    function dcUpdate(name, kind, content, streaming) {
+      if (streaming) registry.get(name).fetched = true;
+      if (kind === "html") {
+        setStreaming(name, "html", !!streaming);
+        updateHtml(name, content);
+      } else if (kind === "js") {
+        setStreaming(name, "js", !!streaming);
+        if (!streaming) updateJs(name, content);
+      } else if (kind === "props") {
+        const { props, preview } = parseDataProps(content);
+        const r = registry.get(name);
+        r.propsMeta = props ?? void 0;
+        r.preview = preview;
+        registry.bump(name);
+      }
+    }
+    function setProps(name, overrides) {
+      registry.get(name).propOverrides = overrides && typeof overrides === "object" ? { ...overrides } : null;
+      registry.bump(name);
+    }
+    function adoptParsed(name, parsed) {
+      if (!parsed) return;
+      const r = registry.get(name);
+      if (parsed.props) r.propsMeta = parsed.props;
+      if (parsed.preview) r.preview = parsed.preview;
+      if (parsed.template) updateHtml(name, parsed.template);
+      if (parsed.js) updateJs(name, parsed.js);
+    }
+    return {
+      registry,
+      getDC: factory.getDC,
+      updateHtml,
+      updateJs,
+      dcUpdate,
+      setProps,
+      adoptParsed,
+      setRootName: (name) => {
+        rootName = name;
+      },
+      markFetched: (name) => {
+        registry.get(name).fetched = true;
+      },
+      annotatedTemplate: (name) => {
+        const r = registry.get(name);
+        return r.tpl && r.tpl.__annotated || null;
+      },
+      templateSource: (name) => registry.get(name).html || null,
+      StreamableLogic
+    };
+  }
+
+  // src/index.ts
+  var REACT_URL = "https://unpkg.com/react@18.3.1/umd/react.production.min.js";
+  var REACT_SRI = "sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z";
+  var REACT_DOM_URL = "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js";
+  var REACT_DOM_SRI = "sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1";
+  function hideRawTemplate() {
+    const s = document.createElement("style");
+    s.textContent = "x-dc{display:none!important}";
+    document.head.appendChild(s);
+  }
+  function loadScript(src, integrity) {
+    return new Promise((resolve2, reject) => {
+      //! nosemgrep: create-script-element
+      const s = document.createElement("script");
+      s.src = src;
+      s.integrity = integrity;
+      s.crossOrigin = "anonymous";
+      s.async = false;
+      s.onload = () => resolve2();
+      s.onerror = () => reject(new Error(`failed to load ${src}`));
+      document.head.appendChild(s);
+    });
+  }
+  function loadReactUmd() {
+    const w = window;
+    if (w.React && w.ReactDOM) return Promise.resolve();
+    return Promise.all([
+      loadScript(REACT_URL, REACT_SRI),
+      loadScript(REACT_DOM_URL, REACT_DOM_SRI)
+    ]).then(() => void 0);
+  }
+  function init() {
+    const runtime = createRuntime(document);
+    let rootName = "Root";
+    const baseCss = document.createElement("style");
+    baseCss.textContent = BASE_CSS;
+    document.head.prepend(baseCss);
+    const notifyHost = () => {
+      if (window.parent === window) return;
+      const r = runtime.registry.entries[rootName];
+      try {
+        window.parent.postMessage(
+          {
+            type: "__dc_booted",
+            rootName,
+            propsMeta: r && r.propsMeta || null,
+            preview: r && r.preview || null
+          },
+          "*"
+        );
+      } catch {
+      }
+    };
+    const api = {
+      __dcUpdate: (name, kind, content, streaming) => {
+        runtime.dcUpdate(name, kind, content, streaming);
+        if (name === rootName && !streaming && kind === "props") notifyHost();
+      },
+      __dcSetProps: (name, overrides) => runtime.setProps(name, overrides),
+      /** Name of the component currently mounted as the page root — DC tools
+       *  push their template-stream here when targeting "the open page". */
+      __dcRootName: () => rootName,
+      /** Editor bridge — the encoded, `data-dc-tpl`-annotated template source.
+       *  The host editor parses this into its own template DOM so it can map a
+       *  rendered node (carrying the same `data-dc-tpl`) back to the source
+       *  node that emitted it. Returns the encoded form (`<sc-comp>`,
+       *  `sc-camel-*` attrs); the editor decodes on serialize. */
+      __dcAnnotatedTemplate: (name) => runtime.annotatedTemplate(name),
+      /** Editor bridge — the *original* (decoded) template source. */
+      __dcTemplateSource: (name) => runtime.templateSource(name),
+      __dcBoot: () => {
+        rootName = boot(runtime, document) ?? rootName;
+        notifyHost();
+      },
+      __dcRegistry: runtime.registry.entries,
+      getDC: (name) => runtime.getDC(name),
+      // `DCLogic` is the documented base class name; `StreamableLogic` is the
+      // implementation alias kept for any project that already references it.
+      DCLogic: runtime.StreamableLogic,
+      StreamableLogic: runtime.StreamableLogic
+    };
+    Object.assign(window, api);
+    if (document.readyState !== "loading") api.__dcBoot();
+    else document.addEventListener("DOMContentLoaded", () => api.__dcBoot());
+  }
+  hideRawTemplate();
+  loadReactUmd().then(init).catch((err) => {
+    console.error("[dc] failed to load React or boot:", err);
+    throw err;
+  });
+})();
+
+</script>
+</body>
+</html>

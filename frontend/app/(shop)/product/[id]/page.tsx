@@ -139,7 +139,7 @@ export default function ProductPage() {
               >
                 −
               </Box>
-              <Box sx={{ width: 50, textAlign: "center", fontWeight: 600, fontSize: 16 }}>{qty}</Box>
+              <Box sx={{ width: 50, textAlign: "center", fontWeight: 600, fontSize: 16, color: "text.primary" }}>{qty}</Box>
               <Box
                 component="button"
                 onClick={() => setQty((q) => Math.min(product.stock || 1, q + 1))}

@@ -36,11 +36,11 @@ export default function AdminOrdersPage() {
       ) : (
         <Box sx={{ p: 4 }}>
           <Box sx={{ border: "1px solid", borderColor: "maison.line.l10", borderRadius: 2, overflow: "hidden" }}>
-            <Box sx={{ display: "grid", gridTemplateColumns: COLS, bgcolor: "maison.bgDeep", borderBottom: "1px solid", borderColor: "maison.line.l10", px: 2.5, py: 1.6, fontWeight: 600, fontSize: 11, letterSpacing: ".1em", textTransform: "uppercase", color: "text.disabled" }}>
+            <Box sx={{ display: "grid", gridTemplateColumns: COLS, columnGap: 2.5, bgcolor: "maison.bgDeep", borderBottom: "1px solid", borderColor: "maison.line.l10", px: 2.5, py: 1.6, fontWeight: 600, fontSize: 11, letterSpacing: ".1em", textTransform: "uppercase", color: "text.disabled" }}>
               <span>Order</span><span>Customer</span><span>Items</span><span>Status</span><span>Total</span><span>Date</span>
             </Box>
             {orders.map((o) => (
-              <Box key={o._id} sx={{ display: "grid", gridTemplateColumns: COLS, alignItems: "center", px: 2.5, py: 1.6, borderBottom: "1px solid", borderColor: "maison.line.l06", fontWeight: 500, fontSize: 14, color: "text.secondary" }}>
+              <Box key={o._id} sx={{ display: "grid", gridTemplateColumns: COLS, columnGap: 2.5, alignItems: "center", px: 2.5, py: 1.6, borderBottom: "1px solid", borderColor: "maison.line.l06", fontWeight: 500, fontSize: 14, color: "text.secondary" }}>
                 <Box component="span" sx={{ color: "secondary.main", fontWeight: 600 }}>#{o._id.slice(-6).toUpperCase()}</Box>
                 <span>{o.shippingAddress.firstName} {o.shippingAddress.lastName}</span>
                 <span>{o.items.reduce((s, i) => s + i.quantity, 0)}</span>

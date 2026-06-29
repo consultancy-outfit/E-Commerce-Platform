@@ -106,20 +106,12 @@ export default function LoginPage() {
       </form>
 
       {portal === "customer" ? (
-        <>
-          <Typography sx={{ textAlign: "center", color: "text.disabled" }}>
-            New here?{" "}
-            <Link href="/signup" style={{ color: "#C9A24B", fontWeight: 600 }}>
-              Create an account
-            </Link>
-          </Typography>
-          <Typography sx={{ textAlign: "center", fontSize: 13, color: "text.disabled", mt: 1.2 }}>
-            or{" "}
-            <Link href="/catalog" style={{ textDecoration: "underline" }}>
-              browse as guest
-            </Link>
-          </Typography>
-        </>
+        <Typography sx={{ textAlign: "center", color: "text.disabled" }}>
+          New here?{" "}
+          <Link href="/signup" style={{ color: "#C9A24B", fontWeight: 600 }}>
+            Create an account
+          </Link>
+        </Typography>
       ) : (
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0.9, fontSize: 13, color: "text.disabled" }}>
           <LockOutlinedIcon sx={{ fontSize: 14 }} />

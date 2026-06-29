@@ -90,7 +90,7 @@ function CartInner() {
                   >
                     −
                   </Box>
-                  <Box sx={{ width: 40, textAlign: "center", fontWeight: 600, fontSize: 14 }}>{line.quantity}</Box>
+                  <Box sx={{ width: 40, textAlign: "center", fontWeight: 600, fontSize: 14, color: "text.primary" }}>{line.quantity}</Box>
                   <Box
                     component="button"
                     onClick={() => updateItem({ productId: line.productId, size: line.size, quantity: line.quantity + 1 })}

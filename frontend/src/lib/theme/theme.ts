@@ -39,6 +39,10 @@ export function createMaisonTheme(mode: ThemeMode): Theme {
     shape: { borderRadius: 4 },
     typography: {
       fontFamily: SANS,
+      // Default every Typography to the theme-correct text colour so plain text
+      // (no explicit colour) can't inherit a stale colour across a theme switch.
+      // Muted text still overrides via sx/color; nothing uses color="inherit".
+      allVariants: { color: t.text },
       // Marcellus is the display/serif face used for headings, prices, titles.
       // Headings carry an explicit theme-correct colour so they never depend on
       // the inherited body colour (which can lag a theme switch and wash out on

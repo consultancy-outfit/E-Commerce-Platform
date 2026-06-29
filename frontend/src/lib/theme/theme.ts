@@ -40,12 +40,15 @@ export function createMaisonTheme(mode: ThemeMode): Theme {
     typography: {
       fontFamily: SANS,
       // Marcellus is the display/serif face used for headings, prices, titles.
-      h1: { fontFamily: SERIF, fontWeight: 400, lineHeight: 1.05 },
-      h2: { fontFamily: SERIF, fontWeight: 400, lineHeight: 1.05 },
-      h3: { fontFamily: SERIF, fontWeight: 400 },
-      h4: { fontFamily: SERIF, fontWeight: 400 },
-      h5: { fontFamily: SERIF, fontWeight: 400 },
-      h6: { fontFamily: SERIF, fontWeight: 400 },
+      // Headings carry an explicit theme-correct colour so they never depend on
+      // the inherited body colour (which can lag a theme switch and wash out on
+      // the light surface).
+      h1: { fontFamily: SERIF, fontWeight: 400, lineHeight: 1.05, color: t.text },
+      h2: { fontFamily: SERIF, fontWeight: 400, lineHeight: 1.05, color: t.text },
+      h3: { fontFamily: SERIF, fontWeight: 400, color: t.text },
+      h4: { fontFamily: SERIF, fontWeight: 400, color: t.text },
+      h5: { fontFamily: SERIF, fontWeight: 400, color: t.text },
+      h6: { fontFamily: SERIF, fontWeight: 400, color: t.text },
       button: { textTransform: "none", fontWeight: 600 },
       body1: { fontSize: 14 },
       body2: { fontSize: 13 },

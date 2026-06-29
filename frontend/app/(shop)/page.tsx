@@ -24,7 +24,7 @@ const ph = (id: string, w = 900, h = 1100) =>
   `https://images.unsplash.com/photo-${id}?w=${w}&h=${h}&fit=crop&crop=entropy&q=80&auto=format`;
 
 const PROMOS = [
-  { label: "Dresses", caption: "Fluid silhouettes", id: "1539008835657-9e8e9680c956" },
+  { label: "Dresses", caption: "Fluid silhouettes", id: "1595777457583-95e059d581b8" },
   { label: "Outerwear", caption: "Considered tailoring", id: "1539109136881-3be0616acf4b" },
   { label: "Knitwear", caption: "Grade-A cashmere", id: "1434389677669-e08b4cac3105" },
 ];

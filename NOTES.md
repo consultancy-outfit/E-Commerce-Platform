@@ -112,11 +112,17 @@ integrity; order history; admin order lifecycle with validated transitions;
 analytics dashboard with a chart; recommendations; both dark and light themes;
 seed script; unit tests; Swagger.
 
+**Built fully:**
+- *Payment* — Stripe **test mode** via the PaymentIntents + **Elements** flow:
+  the backend creates a PaymentIntent (`POST /orders/payment-intent`), the
+  frontend confirms the card with Stripe Elements (`CardElement` +
+  `confirmCardPayment`), and `checkout` **verifies the succeeded intent
+  server-side** (status + amount) before creating the order — failed/cancelled
+  payments create no order. The secret key stays server-side; only the
+  publishable key is exposed. With no keys set, a labelled mock keeps the flow
+  working. (Verified end-to-end against live Stripe test keys.)
+
 **Mocked / simplified (documented):**
-- *Payment* — Stripe **test mode** via PaymentIntent when a test key is set;
-  otherwise a labelled mock. The checkout card fields are display-only (read-only
-  test card) rather than Stripe Elements, since the backend owns the test charge
-  and no real card data should reach our server.
 - *Contact form* — client-side only (no backend endpoint); shows a confirmation.
 - *Category counts* in the catalog sidebar are omitted (would need an extra
   aggregate); filters themselves are fully wired.
@@ -126,8 +132,8 @@ seed script; unit tests; Swagger.
   negative; a true transaction would also make the multi-line reserve fully
   all-or-nothing under heavy concurrency.
 
-**With more time:** Stripe Elements on the client + webhook confirmation;
-per-size stock; product image gallery; server-side pagination cursors; richer
+**With more time:** Stripe webhook confirmation (in addition to the synchronous
+verify); per-size stock; product image gallery; server-side pagination cursors; richer
 admin filters/search; e2e tests (Playwright) for the UI journeys; optimistic cart
 updates; a minor dark→light theme flash on first paint for light-mode users
 (currently mitigated by an anti-flash `data-theme` script but MUI's JS theme

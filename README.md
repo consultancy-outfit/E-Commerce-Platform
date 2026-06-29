@@ -50,20 +50,33 @@ npm run start:dev           # http://localhost:3001  (Swagger at /api/docs)
 | `STRIPE_SECRET_KEY` | _(blank)_ | Stripe **test** secret key; blank → built-in mock payment |
 | `UPLOAD_DIR` | `uploads` | where product images are written |
 
-> Payments: with a Stripe **test** secret key set, checkout creates and confirms
-> a test PaymentIntent. Left blank (the default), checkout uses a clearly
-> labelled mock so the flow always works. No real charge is ever made.
-
 ## 2. Frontend
 
 ```bash
 cd frontend
 npm install
-cp .env.example .env.local  # NEXT_PUBLIC_API_URL=http://localhost:3001
+cp .env.example .env.local  # set NEXT_PUBLIC_API_URL + NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 npm run dev                 # http://localhost:3000
 ```
 
 Open **http://localhost:3000**.
+
+**Frontend environment (`frontend/.env.local`)**
+
+| var | notes |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | backend URL, e.g. `http://localhost:3001` |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe **test** publishable key (`pk_test_…`); leave blank to use the mock payment UI |
+
+### Payments (Stripe test mode)
+Checkout uses the Stripe **PaymentIntents + Elements** flow: the backend creates a
+PaymentIntent (`POST /orders/payment-intent`), the frontend confirms the card with
+Stripe Elements, then `POST /orders/checkout` **verifies the succeeded intent
+server-side** (status + amount) before creating the order. On a failed/cancelled
+payment no order is created. The **secret key never reaches the frontend**; only
+the publishable key is exposed. If `STRIPE_SECRET_KEY` /
+`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` are blank, a clearly-labelled mock is used so
+the flow still works. Test card: **4242 4242 4242 4242**, any future expiry, any CVC.
 
 ## Seeded login credentials
 

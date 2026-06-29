@@ -21,7 +21,7 @@ describe('OrdersService.checkout', () => {
     };
     cart = { getCart: jest.fn() };
     cartRepo = { clear: jest.fn().mockResolvedValue(undefined) };
-    payment = { charge: jest.fn().mockResolvedValue({ ref: 'pay_123', mocked: true }) };
+    payment = { verify: jest.fn().mockResolvedValue('pi_123') };
     service = new OrdersService(orders, products, cart, cartRepo, payment);
   });
 
@@ -34,16 +34,16 @@ describe('OrdersService.checkout', () => {
     products.findByIds.mockResolvedValue([product('p1', 189, 9, 'Silk dress')]);
 
     const userId = '0123456789abcdef01234567';
-    const order = await service.checkout(userId, { shippingAddress: address });
+    const order = await service.checkout(userId, { shippingAddress: address, paymentIntentId: 'pi_123' });
 
     // 189*3 = 567 subtotal, +20% VAT = 680.40 — not the client's 999.
     expect(order.subtotal).toBe(567);
     expect(order.tax).toBe(113.4);
     expect(order.total).toBe(680.4);
     expect(order.status).toBe(OrderStatus.Pending);
-    expect(order.paymentRef).toBe('pay_123');
+    expect(order.paymentRef).toBe('pi_123');
     expect(products.decrementStock).toHaveBeenCalledWith('p1', 3);
-    expect(payment.charge).toHaveBeenCalledWith(680.4, undefined);
+    expect(payment.verify).toHaveBeenCalledWith('pi_123', 680.4);
     expect(cartRepo.clear).toHaveBeenCalledWith(userId);
   });
 
@@ -74,7 +74,7 @@ describe('OrdersService.checkout', () => {
       ],
     });
     products.findByIds.mockResolvedValue([product('p1', 100, 5), product('p2', 50, 5)]);
-    payment.charge.mockRejectedValue(new Error('card declined'));
+    payment.verify.mockRejectedValue(new Error('payment not completed'));
 
     await expect(service.checkout('u1', { shippingAddress: address })).rejects.toThrow();
     // Both reserved decrements must be restored.

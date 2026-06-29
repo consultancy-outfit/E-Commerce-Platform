@@ -3,7 +3,10 @@ import type { Order, ShippingAddress } from "@/src/lib/types";
 
 export const ordersApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    checkout: build.mutation<Order, { shippingAddress: ShippingAddress; paymentMethodId?: string }>({
+    createPaymentIntent: build.mutation<{ clientSecret: string; amount: number; mocked: boolean }, void>({
+      query: () => ({ url: "/orders/payment-intent", method: "POST" }),
+    }),
+    checkout: build.mutation<Order, { shippingAddress: ShippingAddress; paymentIntentId?: string }>({
       query: (body) => ({ url: "/orders/checkout", method: "POST", body }),
       invalidatesTags: ["Cart", "Order", "AdminOrder", "Analytics", "Product"],
     }),
@@ -18,4 +21,9 @@ export const ordersApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useCheckoutMutation, useGetMyOrdersQuery, useGetMyOrderQuery } = ordersApi;
+export const {
+  useCreatePaymentIntentMutation,
+  useCheckoutMutation,
+  useGetMyOrdersQuery,
+  useGetMyOrderQuery,
+} = ordersApi;

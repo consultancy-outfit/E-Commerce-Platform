@@ -27,15 +27,14 @@ export class OrdersService {
   ) {}
 
   /**
-   * Checkout: validate stock, compute totals server-side from DB prices, reserve
-   * stock atomically, charge (Stripe test / mock), persist the order, clear cart.
-   * On any failure after reserving stock, the reservation is rolled back.
+   * Validate the cart against current stock and compute authoritative totals
+   * from DB prices (never trusting the client). Shared by payment-intent
+   * creation and checkout.
    */
-  async checkout(userId: string, dto: CheckoutDto): Promise<OrderDocument> {
+  private async priceCart(userId: string) {
     const view = await this.cart.getCart(userId);
     if (view.items.length === 0) throw new BadRequestException('Your cart is empty');
 
-    // Authoritative product lookup (never trust client prices/stock).
     const products = await this.products.findByIds(view.items.map((i) => i.productId));
     const byId = new Map(products.map((p) => [String(p._id), p]));
 
@@ -43,15 +42,32 @@ export class OrdersService {
       const product = byId.get(i.productId);
       if (!product) throw new NotFoundException(`Product ${i.productId} no longer exists`);
       if (i.quantity > product.stock) {
-        throw new ConflictException(
-          `Only ${product.stock} of "${product.name}" in stock`,
-        );
+        throw new ConflictException(`Only ${product.stock} of "${product.name}" in stock`);
       }
       return { product, quantity: i.quantity, size: i.size };
     });
 
     const subtotal = lines.reduce((s, l) => s + l.product.price * l.quantity, 0);
-    const totals = computeTotals(subtotal);
+    return { lines, totals: computeTotals(subtotal) };
+  }
+
+  /**
+   * Create a Stripe PaymentIntent for the current cart (validates stock + totals
+   * server-side). The client confirms it with Stripe Elements before checkout.
+   */
+  async createPaymentIntent(userId: string): Promise<{ clientSecret: string; amount: number; mocked: boolean }> {
+    const { totals } = await this.priceCart(userId);
+    const intent = await this.payment.createIntent(totals.total);
+    return { clientSecret: intent.clientSecret, amount: totals.total, mocked: intent.mocked };
+  }
+
+  /**
+   * Checkout: re-validate stock + totals, reserve stock atomically, verify the
+   * client-confirmed PaymentIntent (Stripe test / mock), persist the order, clear
+   * the cart. On any failure after reserving stock, the reservation is rolled back.
+   */
+  async checkout(userId: string, dto: CheckoutDto): Promise<OrderDocument> {
+    const { lines, totals } = await this.priceCart(userId);
 
     // Reserve stock atomically; roll back if a concurrent order took the last unit.
     const reserved: Array<{ id: string; qty: number }> = [];
@@ -64,11 +80,10 @@ export class OrdersService {
       reserved.push({ id: String(l.product._id), qty: l.quantity });
     }
 
-    // Charge after stock is reserved; restore stock if the payment fails.
+    // Verify the payment the client confirmed via Elements; restore stock on failure.
     let paymentRef: string;
     try {
-      const result = await this.payment.charge(totals.total, dto.paymentMethodId);
-      paymentRef = result.ref;
+      paymentRef = await this.payment.verify(dto.paymentIntentId, totals.total);
     } catch (err) {
       await this.rollback(reserved);
       throw err;

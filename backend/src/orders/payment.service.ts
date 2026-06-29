@@ -1,18 +1,20 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { randomBytes } from 'crypto';
 
-export interface PaymentResult {
-  ref: string;
+export interface CreatedIntent {
+  id: string;
+  clientSecret: string;
   mocked: boolean;
 }
 
 /**
- * Processes the checkout payment. If a Stripe TEST secret key is configured it
- * creates and confirms a PaymentIntent in test mode; otherwise it falls back to
- * a clearly-labelled mock so the end-to-end flow always works (documented in
- * NOTES.md). Real card data never touches this server.
+ * Stripe (TEST mode) payment handling using the PaymentIntents + Elements flow:
+ * the backend creates a PaymentIntent (client confirms it with Stripe Elements),
+ * then verifies the succeeded intent before an order is created. If no Stripe
+ * secret key is configured it falls back to a clearly-labelled mock so the flow
+ * still works (documented in NOTES.md). The secret key never leaves the server.
  */
 @Injectable()
 export class PaymentService {
@@ -27,25 +29,54 @@ export class PaymentService {
     }
   }
 
-  async charge(amount: number, paymentMethodId?: string): Promise<PaymentResult> {
+  get live(): boolean {
+    return !!this.stripe;
+  }
+
+  private toMinor(amount: number): number {
+    return Math.round(amount * 100);
+  }
+
+  /** Create a PaymentIntent for the given GBP amount; returns its client secret. */
+  async createIntent(amount: number): Promise<CreatedIntent> {
     if (!this.stripe) {
-      return { ref: `mock_${randomBytes(10).toString('hex')}`, mocked: true };
+      const id = `mock_pi_${randomBytes(10).toString('hex')}`;
+      return { id, clientSecret: `${id}_secret`, mocked: true };
     }
+    const intent = await this.stripe.paymentIntents.create({
+      amount: this.toMinor(amount),
+      currency: 'gbp',
+      automatic_payment_methods: { enabled: true, allow_redirects: 'never' },
+    });
+    return { id: intent.id, clientSecret: intent.client_secret as string, mocked: false };
+  }
+
+  /**
+   * Verify a PaymentIntent that the client confirmed via Elements: it must exist,
+   * be `succeeded`, and match the server-computed amount. Returns the payment ref.
+   * In mock mode (no key) any non-empty id is accepted.
+   */
+  async verify(paymentIntentId: string | undefined, expectedAmount: number): Promise<string> {
+    if (!this.stripe) {
+      return paymentIntentId || `mock_pi_${randomBytes(10).toString('hex')}`;
+    }
+    if (!paymentIntentId) {
+      throw new BadRequestException('Missing payment reference');
+    }
+    let intent: Stripe.PaymentIntent;
     try {
-      const intent = await this.stripe.paymentIntents.create({
-        amount: Math.round(amount * 100), // pence
-        currency: 'gbp',
-        payment_method: paymentMethodId ?? 'pm_card_visa', // Stripe test PM
-        confirm: true,
-        automatic_payment_methods: { enabled: true, allow_redirects: 'never' },
-      });
-      if (intent.status !== 'succeeded') {
-        throw new HttpException(`Payment not completed (${intent.status})`, HttpStatus.PAYMENT_REQUIRED);
-      }
-      return { ref: intent.id, mocked: false };
+      intent = await this.stripe.paymentIntents.retrieve(paymentIntentId);
     } catch (err) {
-      this.logger.error('Stripe payment failed', err as Error);
-      throw new HttpException('Payment could not be processed', HttpStatus.PAYMENT_REQUIRED);
+      this.logger.error('Stripe retrieve failed', err as Error);
+      throw new HttpException('Could not verify payment', HttpStatus.PAYMENT_REQUIRED);
     }
+    if (intent.status !== 'succeeded') {
+      throw new HttpException(`Payment not completed (${intent.status})`, HttpStatus.PAYMENT_REQUIRED);
+    }
+    if (intent.amount !== this.toMinor(expectedAmount)) {
+      // Guards against a client tampering with the amount.
+      throw new BadRequestException('Payment amount does not match order total');
+    }
+    return intent.id;
   }
 }

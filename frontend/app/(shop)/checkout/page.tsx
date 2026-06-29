@@ -5,23 +5,31 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, TextField, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import Protected from "@/src/components/Protected";
 import StatusBadge from "@/src/components/StatusBadge";
 import { useToast } from "@/src/components/ToastProvider";
 import { imageUrl } from "@/src/lib/api/baseApi";
 import { gbp } from "@/src/lib/format";
+import { stripeEnabled, stripePromise } from "@/src/lib/stripe";
 import { useAppSelector } from "@/src/lib/hooks";
 import { useGetCartQuery } from "@/src/features/cart/cartApi";
-import { useCheckoutMutation } from "@/src/features/orders/ordersApi";
+import { useCheckoutMutation, useCreatePaymentIntentMutation } from "@/src/features/orders/ordersApi";
 import { checkoutSchema, type CheckoutValues } from "@/src/schemas/checkout";
 
 function CheckoutInner() {
   const router = useRouter();
   const toast = useToast();
+  const theme = useTheme();
+  const stripe = useStripe();
+  const elements = useElements();
   const user = useAppSelector((s) => s.auth.user);
   const { data: cart } = useGetCartQuery();
-  const [checkout, { isLoading }] = useCheckoutMutation();
+  const [createPaymentIntent] = useCreatePaymentIntentMutation();
+  const [checkout] = useCheckoutMutation();
   const [serverError, setServerError] = React.useState<string | null>(null);
+  const [submitting, setSubmitting] = React.useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<CheckoutValues>({
     resolver: yupResolver(checkoutSchema),
@@ -39,20 +47,78 @@ function CheckoutInner() {
     if (cart && cart.items.length === 0) router.replace("/cart");
   }, [cart, router]);
 
+  // Stripe CardElement styled to match the Maison inputs (theme-aware).
+  const cardOptions = React.useMemo(
+    () => ({
+      style: {
+        base: {
+          color: theme.palette.text.primary,
+          fontFamily: "'Hanken Grotesk', sans-serif",
+          fontSize: "14px",
+          iconColor: theme.palette.text.secondary,
+          "::placeholder": { color: theme.palette.text.disabled },
+        },
+        invalid: { color: theme.palette.error.main, iconColor: theme.palette.error.main },
+      },
+    }),
+    [theme],
+  );
+
   const onSubmit = async (v: CheckoutValues) => {
     setServerError(null);
+    setSubmitting(true);
     try {
+      let paymentIntentId: string | undefined;
+
+      if (stripeEnabled) {
+        if (!stripe || !elements) {
+          setServerError("Payment form is still loading — please wait a moment.");
+          return;
+        }
+        const card = elements.getElement(CardElement);
+        if (!card) {
+          setServerError("Please enter your card details.");
+          return;
+        }
+        // 1. Create a PaymentIntent for the cart (server computes the amount).
+        const { clientSecret } = await createPaymentIntent().unwrap();
+        // 2. Confirm the card payment on the client via Stripe Elements.
+        const result = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card,
+            billing_details: { name: `${v.firstName} ${v.lastName}`, email: v.email },
+          },
+        });
+        if (result.error) {
+          const text = result.error.message ?? "Your card could not be charged.";
+          setServerError(text);
+          toast({ title: "Payment failed", text, severity: "error" });
+          return;
+        }
+        if (result.paymentIntent?.status !== "succeeded") {
+          const text = "Payment was not completed. No order was placed.";
+          setServerError(text);
+          toast({ title: "Payment incomplete", text, severity: "error" });
+          return;
+        }
+        paymentIntentId = result.paymentIntent.id;
+      }
+
+      // 3. Create the order — the backend verifies the succeeded PaymentIntent.
       const order = await checkout({
         shippingAddress: { firstName: v.firstName, lastName: v.lastName, line1: v.line1, city: v.city, postcode: v.postcode },
+        paymentIntentId,
       }).unwrap();
-      toast({ title: "Order placed", text: "Thank you — your order is confirmed.", severity: "success" });
+      toast({ title: "Order placed", text: "Thank you — your payment was successful.", severity: "success" });
       router.push(`/confirmation?id=${order._id}`);
     } catch (err) {
       const e = err as { data?: { message?: string | string[] } };
       const msg = e.data?.message;
-      const text = Array.isArray(msg) ? msg[0] : msg || "Checkout failed";
+      const text = Array.isArray(msg) ? msg[0] : msg || "Checkout failed. Please try again.";
       setServerError(text);
       toast({ title: "Checkout failed", text, severity: "error" });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -100,13 +166,30 @@ function CheckoutInner() {
               <StatusBadge label="Test mode" />
             </Box>
             <Box sx={{ bgcolor: "background.paper", border: "1px solid", borderColor: "maison.line.l10", borderRadius: 2, p: 2.75 }}>
-              <TextField fullWidth size="small" defaultValue="4242 4242 4242 4242" sx={{ mb: 1.75 }} slotProps={{ htmlInput: { readOnly: true } }} />
-              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1.75 }}>
-                <TextField fullWidth size="small" defaultValue="12 / 28" slotProps={{ htmlInput: { readOnly: true } }} />
-                <TextField fullWidth size="small" defaultValue="123" slotProps={{ htmlInput: { readOnly: true } }} />
-              </Box>
+              {stripeEnabled ? (
+                <Box
+                  sx={{
+                    bgcolor: "maison.surface2",
+                    border: "1px solid",
+                    borderColor: "maison.line.l16",
+                    borderRadius: 1,
+                    px: 1.75,
+                    py: 1.75,
+                  }}
+                >
+                  <CardElement options={cardOptions} />
+                </Box>
+              ) : (
+                <>
+                  <TextField fullWidth size="small" defaultValue="4242 4242 4242 4242" sx={{ mb: 1.75 }} slotProps={{ htmlInput: { readOnly: true } }} />
+                  <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1.75 }}>
+                    <TextField fullWidth size="small" defaultValue="12 / 28" slotProps={{ htmlInput: { readOnly: true } }} />
+                    <TextField fullWidth size="small" defaultValue="123" slotProps={{ htmlInput: { readOnly: true } }} />
+                  </Box>
+                </>
+              )}
               <Typography sx={{ fontSize: 12, color: "text.disabled", mt: 1.5 }}>
-                Stripe test card — no real charge is made.
+                Stripe test mode — use card 4242 4242 4242 4242, any future expiry &amp; any CVC. No real charge is made.
               </Typography>
             </Box>
           </Box>
@@ -136,8 +219,13 @@ function CheckoutInner() {
                 <Typography variant="h5" sx={{ fontSize: 26 }}>{gbp(cart?.total ?? 0)}</Typography>
               </Box>
               {serverError && <Typography sx={{ color: "error.main", fontSize: 13, mb: 1.5 }}>{serverError}</Typography>}
-              <Button type="submit" fullWidth disabled={isLoading || !cart?.items.length} sx={{ py: 1.7 }}>
-                {isLoading ? "Processing…" : `Pay ${gbp(cart?.total ?? 0)}`}
+              <Button
+                type="submit"
+                fullWidth
+                disabled={submitting || !cart?.items.length || (stripeEnabled && !stripe)}
+                sx={{ py: 1.7 }}
+              >
+                {submitting ? "Processing…" : `Pay ${gbp(cart?.total ?? 0)}`}
               </Button>
             </Box>
           </Box>
@@ -159,7 +247,9 @@ function Summary({ label, value, color }: { label: string; value: string; color?
 export default function CheckoutPage() {
   return (
     <Protected>
-      <CheckoutInner />
+      <Elements stripe={stripePromise}>
+        <CheckoutInner />
+      </Elements>
     </Protected>
   );
 }

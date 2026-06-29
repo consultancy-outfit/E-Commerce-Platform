@@ -12,9 +12,16 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 export class OrdersController {
   constructor(private readonly orders: OrdersService) {}
 
+  @Post('payment-intent')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Create a Stripe PaymentIntent for the current cart' })
+  createPaymentIntent(@CurrentUser('userId') userId: string) {
+    return this.orders.createPaymentIntent(userId);
+  }
+
   @Post('checkout')
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Place an order from the cart (Stripe test / mock payment)' })
+  @ApiOperation({ summary: 'Place an order from the cart (verifies the Stripe payment)' })
   checkout(@CurrentUser('userId') userId: string, @Body() dto: CheckoutDto) {
     return this.orders.checkout(userId, dto);
   }

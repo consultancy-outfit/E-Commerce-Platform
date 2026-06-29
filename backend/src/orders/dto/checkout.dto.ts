@@ -17,9 +17,10 @@ export class CheckoutDto {
   @Type(() => ShippingAddressDto)
   shippingAddress: ShippingAddressDto;
 
-  // Test-mode only. A Stripe test PaymentMethod id, or omitted to use the mock.
-  @ApiPropertyOptional({ example: 'pm_card_visa' })
+  // The PaymentIntent id the client confirmed via Stripe Elements. Omitted only
+  // in mock mode (no Stripe key configured).
+  @ApiPropertyOptional({ example: 'pi_3Xxx...' })
   @IsOptional()
   @IsString()
-  paymentMethodId?: string;
+  paymentIntentId?: string;
 }

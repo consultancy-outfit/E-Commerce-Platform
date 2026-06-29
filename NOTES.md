@@ -22,7 +22,28 @@ relevant subagent, verified against the checklist, then committed with a
 conventional message. One module = one commit; no monolithic final commit.
 
 ## Where the agent helped / where it failed
-<!-- Fill in per phase: subtle mistakes caught, how, and the correction. -->
+
+**Phase 4 — two real bugs caught by live verification (not by the build):**
+
+1. *Cart `findOrCreate` race / duplicate-key 500.* The first implementation did
+   `findOne` then `create`. Because the cart has a unique `user` index and the
+   string `userId` wasn't matching the stored `ObjectId` (see #2), `findOne`
+   returned null on every write, so each add re-attempted an insert and hit
+   `E11000 duplicate key`. Caught by exercising add-to-cart against Mongo (the
+   `tsc` build was clean). Fixed with an atomic `findOneAndUpdate(..., {upsert})`.
+
+2. *String `userId` not matching `ObjectId` fields.* `cart.clear` and
+   `orders.findByUser` filtered with a raw string `userId` on an `ObjectId` ref
+   field, which returned no match in this Mongoose version. Symptoms: cart not
+   cleared after checkout, and `GET /orders` returning `[]` while the order
+   clearly existed (and a second checkout then ran on the un-cleared cart,
+   double-decrementing stock). `_id`-based queries were unaffected because `_id`
+   is always cast. Caught by asserting post-checkout state (cart count, stock
+   delta, order list) rather than trusting the 201 response. Fixed by casting
+   `new Types.ObjectId(userId)` in those queries.
+
+**Lesson applied:** verify *side effects against the database*, not just HTTP
+status codes — both bugs returned plausible-looking success responses.
 
 ## Supervision & verification
 The `supervisor-verifier` checklist (build/lint/tests, auth/authz, validation on

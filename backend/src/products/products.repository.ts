@@ -78,6 +78,23 @@ export class ProductsRepository {
     return this.model.countDocuments().exec();
   }
 
+  /**
+   * Atomically decrement stock only if at least `qty` remains. Returns true on
+   * success. The `$gte` guard guarantees stock can never go negative, even under
+   * concurrent checkouts.
+   */
+  async decrementStock(id: string, qty: number): Promise<boolean> {
+    const res = await this.model
+      .updateOne({ _id: id, stock: { $gte: qty } }, { $inc: { stock: -qty } })
+      .exec();
+    return res.modifiedCount === 1;
+  }
+
+  /** Restore stock (used when a checkout aborts after partial decrements). */
+  incrementStock(id: string, qty: number): Promise<unknown> {
+    return this.model.updateOne({ _id: id }, { $inc: { stock: qty } }).exec();
+  }
+
   /** Same-category candidates for recommendations, excluding the seed product. */
   findRelated(category: string, excludeId: string): Promise<ProductDocument[]> {
     return this.model.find({ category, _id: { $ne: excludeId } }).exec();

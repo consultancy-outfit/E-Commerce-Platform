@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { Badge, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem } from "@mui/material";
+import { Badge, Box, IconButton, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLongOutlined";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBagOutlined";
@@ -37,10 +37,6 @@ export default function StorefrontHeader() {
     else router.push("/login");
   };
   const closeMenu = () => setMenuAnchor(null);
-  const goOrders = () => {
-    closeMenu();
-    router.push("/orders");
-  };
   const signOut = () => {
     closeMenu();
     dispatch(logout());
@@ -124,13 +120,6 @@ export default function StorefrontHeader() {
             },
           }}
         >
-          <MenuItem onClick={goOrders} sx={{ fontSize: 14, py: 1.1 }}>
-            <ListItemIcon sx={{ color: "text.secondary", minWidth: 32 }}>
-              <ReceiptLongIcon sx={{ fontSize: 18 }} />
-            </ListItemIcon>
-            My Orders
-          </MenuItem>
-          <Divider sx={{ borderColor: "maison.line.l08" }} />
           <MenuItem onClick={signOut} sx={{ fontSize: 14, py: 1.1, color: "secondary.main" }}>
             <ListItemIcon sx={{ color: "secondary.main", minWidth: 32 }}>
               <LogoutIcon sx={{ fontSize: 18 }} />

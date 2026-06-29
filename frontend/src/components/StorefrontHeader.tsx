@@ -1,11 +1,13 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { Box, IconButton } from "@mui/material";
+import { Badge, Box, IconButton } from "@mui/material";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBagOutlined";
 import LogoutIcon from "@mui/icons-material/LogoutOutlined";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
 import { useAppDispatch, useAppSelector } from "@/src/lib/hooks";
+import { useGetCartQuery } from "@/src/features/cart/cartApi";
 import { logout } from "@/src/features/auth/authSlice";
 
 const NAV: Array<{ label: string; href: string }> = [
@@ -22,6 +24,10 @@ export default function StorefrontHeader() {
   const dispatch = useAppDispatch();
   const pathname = usePathname();
   const token = useAppSelector((s) => s.auth.token);
+
+  // Cart count badge — only fetch the cart when signed in.
+  const { data: cart } = useGetCartQuery(undefined, { skip: !token });
+  const count = cart?.count ?? 0;
 
   // Profile icon = logout: clicking it signs the user out and returns to login.
   // (Guests have no session, so it simply takes them to the login page.)
@@ -80,6 +86,15 @@ export default function StorefrontHeader() {
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
         <ThemeToggle />
+        <IconButton onClick={() => router.push("/cart")} sx={{ color: "text.secondary" }} aria-label="Cart">
+          <Badge
+            badgeContent={count}
+            color="primary"
+            sx={{ "& .MuiBadge-badge": { fontSize: 10, fontWeight: 600 } }}
+          >
+            <ShoppingBagIcon sx={{ fontSize: 20 }} />
+          </Badge>
+        </IconButton>
         <IconButton onClick={handleLogout} sx={{ color: "text.secondary" }} aria-label="Log out">
           <LogoutIcon sx={{ fontSize: 20 }} />
         </IconButton>

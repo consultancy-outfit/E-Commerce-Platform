@@ -29,7 +29,7 @@ export default function AuthShell({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        p: { xs: 2, md: 5 },
+        p: { xs: 2, sm: 2.5, md: 3 },
         bgcolor: "background.default",
         background:
           "radial-gradient(100% 55% at 50% 0%, rgba(200,32,63,.12), rgba(200,32,63,0) 55%)",
@@ -41,8 +41,10 @@ export default function AuthShell({
 
       <Box
         sx={{
-          width: 1000,
-          maxWidth: "100%",
+          width: "100%",
+          maxWidth: 1280,
+          // Fill more of the viewport on larger screens; stack naturally on mobile.
+          minHeight: { xs: "auto", md: "min(92vh, 820px)" },
           display: "grid",
           gridTemplateColumns: { xs: "1fr", md: "1.05fr 1fr" },
           bgcolor: "background.paper",
@@ -116,12 +118,14 @@ export default function AuthShell({
         </Box>
 
         {/* ===== Form panel ===== */}
-        <Box sx={{ p: { xs: 3.5, sm: 5, md: 6 }, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-          {/* logo shown here on mobile (brand panel is hidden) */}
-          <Box sx={{ display: { xs: "flex", md: "none" }, justifyContent: "center", mb: 4 }}>
-            <Logo size={36} letterSpacing=".34em" />
+        <Box sx={{ p: { xs: 3.5, sm: 5, md: 6 }, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+          <Box sx={{ width: "100%", maxWidth: 440 }}>
+            {/* logo shown here on mobile (brand panel is hidden) */}
+            <Box sx={{ display: { xs: "flex", md: "none" }, justifyContent: "center", mb: 4 }}>
+              <Logo size={36} letterSpacing=".34em" />
+            </Box>
+            {children}
           </Box>
-          {children}
         </Box>
       </Box>
     </Box>

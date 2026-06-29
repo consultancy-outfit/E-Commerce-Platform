@@ -113,7 +113,10 @@ src/
 
 ## REST endpoint contract
 
-Base URL: `http://localhost:3000`. JSON. Auth via `Authorization: Bearer <jwt>`.
+> Verified end-to-end in Phase 11: every endpoint below matches the frontend's
+> RTK Query calls (paths, payloads, auth headers, status codes).
+
+Base URL: `http://localhost:3001`. JSON. Auth via `Authorization: Bearer <jwt>`.
 Roles: 🔓 public · 👤 customer (authenticated) · 🛡️ admin.
 
 ### Auth

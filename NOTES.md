@@ -47,8 +47,27 @@ status codes — both bugs returned plausible-looking success responses.
 
 ## Supervision & verification
 The `supervisor-verifier` checklist (build/lint/tests, auth/authz, validation on
-both sides, data integrity, security) gates each module. Specific verifications
-recorded per phase below.
+both sides, data integrity, security) gates each module. Backend modules were
+verified **live against MongoDB** with scripted request sequences (not just by
+the build), which is how the Phase 4 bugs were caught. The frontend was gated by
+`tsc --noEmit` + `next build` each phase.
+
+**Phase 11 — integration pass.** With both apps running, I replayed the exact
+request sequences the frontend issues, for both journeys:
+- *Customer*: signup → browse (search/sort/paginate) → product detail +
+  recommendations → add to cart → checkout → order history — all green; totals
+  server-computed (e.g. £172×2 = £344 → £412.80 with VAT).
+- *Admin*: analytics → all orders → advance status → create product via
+  multipart **file upload** → edit → delete — all green.
+- *Authorization*: a customer token gets **403** on `/admin/*` and `POST
+  /products`, and a customer cannot read another user's order (403); own order
+  returns 200.
+- The Next app boots and serves `/login`, `/catalog`, `/admin` (200) and `/`
+  redirects to `/catalog`.
+
+**No contract mismatches were found** — both halves were built against the
+single contract in `CLAUDE.md`, so they aligned. CORS allows the storefront
+origin; the JWT flows on every authenticated request.
 
 ## Design workflow
 The UI was designed up front in a standalone HTML prototype

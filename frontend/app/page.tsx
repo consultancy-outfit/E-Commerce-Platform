@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-// Placeholder until Phase 9 makes the catalog the storefront home.
+// The storefront home is the catalog.
 export default function Home() {
-  redirect("/preview");
+  redirect("/catalog");
 }

@@ -7,14 +7,12 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Typography, TextField } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Logo from "@/src/components/Logo";
 import AuthShell from "@/src/features/auth/AuthShell";
+import PortalToggle, { type Portal } from "@/src/features/auth/PortalToggle";
 import { loginSchema, type LoginValues } from "@/src/schemas/auth";
 import { useLoginMutation } from "@/src/features/auth/authApi";
 import { useAppDispatch } from "@/src/lib/hooks";
 import { setCredentials } from "@/src/features/auth/authSlice";
-
-type Portal = "customer" | "admin";
 
 // Seeded demo credentials, prefilled to make review easy (see README).
 const DEMO: Record<Portal, LoginValues> = {
@@ -56,121 +54,73 @@ export default function LoginPage() {
     }
   };
 
-  const tabStyle = (active: boolean) => ({
-    flex: 1,
-    textAlign: "center" as const,
-    py: 1.1,
-    borderRadius: 1,
-    cursor: "pointer",
-    fontWeight: 600,
-    fontSize: 13,
-    color: active ? "#fff" : "text.disabled",
-    bgcolor: active ? "primary.main" : "transparent",
-  });
-
   return (
-    <AuthShell>
-      <Box sx={{ width: 420, maxWidth: "100%" }}>
-        <Box sx={{ display: "flex", justifyContent: "center", mb: 5.5 }}>
-          <Logo size={36} letterSpacing=".34em" />
+    <AuthShell
+      brandTitle="Welcome back."
+      brandSubtitle="Sign in to continue — your bag, orders and saved pieces are right where you left them."
+      points={["Early access to new arrivals", "Free shipping over £150", "30-day free returns"]}
+    >
+      <PortalToggle value={portal} onChange={switchPortal} />
+
+      <Typography variant="h4" sx={{ fontSize: 30, mb: 0.5 }}>
+        {portal === "admin" ? "Admin sign in" : "Sign in"}
+      </Typography>
+      <Typography sx={{ color: "text.disabled", mb: 3.5 }}>
+        {portal === "admin" ? "Access the Maison console" : "Welcome back — sign in to continue shopping"}
+      </Typography>
+
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Typography sx={{ fontWeight: 500, fontSize: 12, color: "text.secondary", mb: 0.8 }}>Email</Typography>
+        <TextField
+          fullWidth
+          size="small"
+          {...register("email")}
+          error={!!errors.email}
+          helperText={errors.email?.message}
+          sx={{ mb: 2 }}
+        />
+        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.8 }}>
+          <Typography sx={{ fontWeight: 500, fontSize: 12, color: "text.secondary" }}>Password</Typography>
+          <Typography sx={{ fontWeight: 500, fontSize: 12, color: "secondary.main", cursor: "pointer" }}>Forgot?</Typography>
         </Box>
+        <TextField
+          fullWidth
+          size="small"
+          type="password"
+          {...register("password")}
+          error={!!errors.password}
+          helperText={errors.password?.message}
+          sx={{ mb: 2 }}
+        />
 
-        <Box
-          sx={{
-            display: "flex",
-            bgcolor: "maison.surfaceImg",
-            border: "1px solid",
-            borderColor: "maison.line.l14",
-            borderRadius: 1.5,
-            p: 0.5,
-            mb: 3.5,
-          }}
-        >
-          <Box onClick={() => switchPortal("customer")} sx={tabStyle(portal === "customer")}>
-            Customer Portal
-          </Box>
-          <Box onClick={() => switchPortal("admin")} sx={tabStyle(portal === "admin")}>
-            Admin Portal
-          </Box>
-        </Box>
+        {serverError && <Typography sx={{ color: "error.main", fontSize: 13, mb: 2 }}>{serverError}</Typography>}
 
-        <Typography variant="h4" sx={{ fontSize: 34, textAlign: "center", mb: 0.5 }}>
-          {portal === "admin" ? "Admin sign in" : "Welcome back"}
-        </Typography>
-        <Typography sx={{ color: "text.disabled", textAlign: "center", mb: 4 }}>
-          {portal === "admin" ? "Access the Maison console" : "Sign in to continue shopping"}
-        </Typography>
+        <Button type="submit" fullWidth disabled={isLoading} sx={{ mb: 2.2, py: 1.6 }}>
+          {isLoading ? "Signing in…" : portal === "admin" ? "Sign in to console" : "Sign in"}
+        </Button>
+      </form>
 
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          <Typography sx={{ fontWeight: 500, fontSize: 12, color: "text.secondary", mb: 0.8 }}>
-            Email
+      {portal === "customer" ? (
+        <>
+          <Typography sx={{ textAlign: "center", color: "text.disabled" }}>
+            New here?{" "}
+            <Link href="/signup" style={{ color: "#C9A24B", fontWeight: 600 }}>
+              Create an account
+            </Link>
           </Typography>
-          <TextField
-            fullWidth
-            size="small"
-            {...register("email")}
-            error={!!errors.email}
-            helperText={errors.email?.message}
-            sx={{ mb: 2 }}
-          />
-          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.8 }}>
-            <Typography sx={{ fontWeight: 500, fontSize: 12, color: "text.secondary" }}>
-              Password
-            </Typography>
-            <Typography sx={{ fontWeight: 500, fontSize: 12, color: "secondary.main", cursor: "pointer" }}>
-              Forgot?
-            </Typography>
-          </Box>
-          <TextField
-            fullWidth
-            size="small"
-            type="password"
-            {...register("password")}
-            error={!!errors.password}
-            helperText={errors.password?.message}
-            sx={{ mb: 2 }}
-          />
-
-          {serverError && (
-            <Typography sx={{ color: "error.main", fontSize: 13, mb: 2 }}>{serverError}</Typography>
-          )}
-
-          <Button type="submit" fullWidth disabled={isLoading} sx={{ mb: 2.2, py: 1.6 }}>
-            {isLoading ? "Signing in…" : portal === "admin" ? "Sign in to console" : "Sign in"}
-          </Button>
-        </form>
-
-        {portal === "customer" ? (
-          <>
-            <Typography sx={{ textAlign: "center", color: "text.disabled" }}>
-              New here?{" "}
-              <Link href="/signup" style={{ color: "#C9A24B", fontWeight: 600 }}>
-                Create an account
-              </Link>
-            </Typography>
-            <Typography sx={{ textAlign: "center", fontSize: 13, color: "text.disabled", mt: 1.2 }}>
-              or{" "}
-              <Link href="/catalog" style={{ textDecoration: "underline" }}>
-                browse as guest
-              </Link>
-            </Typography>
-          </>
-        ) : (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 0.9,
-              fontSize: 13,
-              color: "text.disabled",
-            }}
-          >
-            <LockOutlinedIcon sx={{ fontSize: 14 }} />
-            Authorised personnel only
-          </Box>
-        )}
-      </Box>
+          <Typography sx={{ textAlign: "center", fontSize: 13, color: "text.disabled", mt: 1.2 }}>
+            or{" "}
+            <Link href="/catalog" style={{ textDecoration: "underline" }}>
+              browse as guest
+            </Link>
+          </Typography>
+        </>
+      ) : (
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0.9, fontSize: 13, color: "text.disabled" }}>
+          <LockOutlinedIcon sx={{ fontSize: 14 }} />
+          Authorised personnel only
+        </Box>
+      )}
     </AuthShell>
   );
 }

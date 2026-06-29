@@ -30,8 +30,11 @@ export default function AuthShell({
         alignItems: "center",
         justifyContent: "center",
         p: { xs: 2, sm: 2.5, md: 3 },
-        bgcolor: "background.default",
-        background:
+        // Use backgroundColor + backgroundImage (not the `background` shorthand,
+        // which would reset the colour to transparent) so the surround always
+        // follows the active theme — cream in light, near-black in dark.
+        backgroundColor: "background.default",
+        backgroundImage:
           "radial-gradient(100% 55% at 50% 0%, rgba(200,32,63,.12), rgba(200,32,63,0) 55%)",
       }}
     >
@@ -93,20 +96,20 @@ export default function AuthShell({
             <Logo size={36} letterSpacing=".34em" />
           </Box>
           <Box sx={{ position: "relative" }}>
-            <Typography variant="h2" sx={{ fontSize: 40, lineHeight: 1.08, mb: 1.75 }}>
+            <Typography variant="h2" sx={{ fontSize: { md: 52, lg: 58 }, lineHeight: 1.06, mb: 2.5 }}>
               {brandTitle}
             </Typography>
-            <Typography sx={{ fontSize: 15, color: "text.secondary", maxWidth: 360, mb: points?.length ? 3.5 : 0 }}>
+            <Typography sx={{ fontSize: 17, lineHeight: 1.6, color: "text.secondary", maxWidth: 420, mb: points?.length ? 4 : 0 }}>
               {brandSubtitle}
             </Typography>
             {points && points.length > 0 && (
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {points.map((p) => (
-                  <Box key={p} sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
-                    <Box sx={{ width: 22, height: 22, borderRadius: "50%", bgcolor: `${accents.gold}24`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <CheckIcon sx={{ fontSize: 13, color: accents.gold }} />
+                  <Box key={p} sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                    <Box sx={{ width: 28, height: 28, borderRadius: "50%", bgcolor: `${accents.gold}24`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <CheckIcon sx={{ fontSize: 16, color: accents.gold }} />
                     </Box>
-                    <Typography sx={{ fontSize: 13.5, color: "text.secondary" }}>{p}</Typography>
+                    <Typography sx={{ fontSize: 15.5, color: "text.secondary" }}>{p}</Typography>
                   </Box>
                 ))}
               </Box>

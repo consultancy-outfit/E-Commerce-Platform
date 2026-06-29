@@ -18,7 +18,7 @@ export class Product {
   @Prop({ required: true, min: 0 })
   price: number;
 
-  @Prop({ required: true, enum: CATEGORIES })
+  @Prop({ type: String, required: true, enum: CATEGORIES })
   category: string;
 
   // '/uploads/<file>' for locally uploaded images, or an external URL.

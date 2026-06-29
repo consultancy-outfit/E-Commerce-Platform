@@ -18,7 +18,7 @@ export class User {
   @Prop({ required: true, trim: true })
   lastName: string;
 
-  @Prop({ required: true, enum: Role, default: Role.Customer })
+  @Prop({ type: String, required: true, enum: Role, default: Role.Customer })
   role: Role;
 }
 

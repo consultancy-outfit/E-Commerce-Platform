@@ -46,7 +46,7 @@ export class Order {
   @Prop({ required: true }) tax: number;
   @Prop({ required: true }) total: number;
 
-  @Prop({ required: true, enum: OrderStatus, default: OrderStatus.Pending })
+  @Prop({ type: String, required: true, enum: OrderStatus, default: OrderStatus.Pending })
   status: OrderStatus;
 
   @Prop({ type: ShippingAddressSchema, required: true })

@@ -86,7 +86,7 @@ export default function LoginPage() {
         />
         <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.8 }}>
           <Typography sx={{ fontWeight: 500, fontSize: 12, color: "text.secondary" }}>Password</Typography>
-          <Typography sx={{ fontWeight: 500, fontSize: 12, color: "secondary.main", cursor: "pointer" }}>Forgot?</Typography>
+         
         </Box>
         <TextField
           fullWidth

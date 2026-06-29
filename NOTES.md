@@ -77,12 +77,24 @@ reusable MUI theme (dark + light tokens, Marcellus/Hanken Grotesk fonts, crimson
 built to match it screen-for-screen rather than dropping in a template.
 
 ## Assumptions
-- **Tax**: 20% UK VAT, shown as "Estimated tax", computed server-side.
+- **Tax**: 20% UK VAT, shown as "Estimated tax", computed server-side; shipping
+  is free (matches the prototype).
 - **Sizes**: products carry a fixed size set (XS/S/M/L); size is a cart-line
-  attribute, not separate stock per size (kept simple for scope).
+  attribute, not separate stock per size (kept simple for scope). Stock is
+  tracked at the product level.
 - **Images**: stored on the local filesystem under `/uploads` and served
   statically; external image URLs are also accepted (seed data uses Unsplash).
-- (more recorded per phase)
+- **Ports**: backend `3001`, frontend `3000` (the prototype assumed a single
+  origin; split to run both locally without clashing). CORS is scoped to the
+  storefront origin.
+- **Roles**: signup always creates a `customer`; the `role` field is rejected by
+  the validation whitelist, so customers cannot self-promote. Admins are created
+  by the seed (no public admin-signup endpoint, by design).
+- **Order numbers**: the UI shows the last 6 chars of the Mongo `_id` as a short
+  order reference (e.g. `#5027EE`).
+- **Auth persistence**: the JWT + user are kept in `localStorage` and attached to
+  every API request; route guards are client-side for UX, with the backend
+  independently enforcing authz on every endpoint.
 
 ## Open-ended requirement — "relevant product suggestions"
 **Interpretation:** "relevant" = visually/contextually similar items a shopper is
@@ -92,4 +104,42 @@ rest of the catalog so the rail is never empty. Rationale and any later
 refinements documented in Phase 6.
 
 ## Trade-offs & scope
-<!-- Built fully vs mocked vs future work — filled in Phase 12. -->
+
+**Built fully (end-to-end, verified):** JWT auth with roles + guards; product
+catalog with search/filter/sort/pagination; admin product CRUD with local image
+upload; persistent per-user cart; checkout with server-side totals + atomic stock
+integrity; order history; admin order lifecycle with validated transitions;
+analytics dashboard with a chart; recommendations; both dark and light themes;
+seed script; unit tests; Swagger.
+
+**Mocked / simplified (documented):**
+- *Payment* — Stripe **test mode** via PaymentIntent when a test key is set;
+  otherwise a labelled mock. The checkout card fields are display-only (read-only
+  test card) rather than Stripe Elements, since the backend owns the test charge
+  and no real card data should reach our server.
+- *Contact form* — client-side only (no backend endpoint); shows a confirmation.
+- *Category counts* in the catalog sidebar are omitted (would need an extra
+  aggregate); filters themselves are fully wired.
+- *Transactions* — the local MongoDB is standalone (no replica set), so checkout
+  uses conditional atomic `$gte` stock decrements with explicit rollback rather
+  than a multi-document transaction. The `$gte` guard guarantees stock never goes
+  negative; a true transaction would also make the multi-line reserve fully
+  all-or-nothing under heavy concurrency.
+
+**With more time:** Stripe Elements on the client + webhook confirmation;
+per-size stock; product image gallery; server-side pagination cursors; richer
+admin filters/search; e2e tests (Playwright) for the UI journeys; optimistic cart
+updates; a minor dark→light theme flash on first paint for light-mode users
+(currently mitigated by an anti-flash `data-theme` script but MUI's JS theme
+still swaps on mount).
+
+## Verification summary
+- **Backend**: every module exercised live against MongoDB (scripted request
+  sequences), not just compiled. 22 unit tests on pricing, status transitions,
+  auth/hashing, the role guard, and checkout integrity (server-side totals,
+  over-stock rejection, payment-failure rollback).
+- **Frontend**: `tsc --noEmit` + `next build` green each phase (18 routes).
+- **Integration**: full customer + admin journeys replayed through the real
+  contract; authz guards confirmed (403s); app boots and serves.
+- **Clean run**: `npm install` → `npm run seed` → `npm run start:dev` (backend),
+  `npm install` → `npm run dev` (frontend), per the README.

@@ -3,12 +3,15 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
 import AdminTopbar from "@/src/components/AdminTopbar";
 import StatusDonut from "@/src/components/StatusDonut";
+import InventoryBarChart from "@/src/components/InventoryBarChart";
 import { gbp } from "@/src/lib/format";
 import { accents } from "@/src/lib/theme/tokens";
 import { useGetAnalyticsQuery } from "@/src/features/admin/adminApi";
+import { useGetProductsQuery } from "@/src/features/products/productsApi";
 
 export default function AdminDashboard() {
   const { data, isLoading } = useGetAnalyticsQuery();
+  const { data: products } = useGetProductsQuery({ limit: 100, sort: "newest" });
 
   const avgOrder = data && data.orderCount > 0 ? data.totalSales / data.orderCount : 0;
   const maxUnits = data?.topProducts[0]?.units || 1;
@@ -53,6 +56,12 @@ export default function AdminDashboard() {
             </Panel>
             <Panel title="Orders by status">
               <StatusDonut data={data.ordersByStatus} />
+            </Panel>
+          </Box>
+
+          <Box sx={{ mt: 2 }}>
+            <Panel title="Product inventory">
+              <InventoryBarChart products={products?.items ?? []} />
             </Panel>
           </Box>
         </Box>

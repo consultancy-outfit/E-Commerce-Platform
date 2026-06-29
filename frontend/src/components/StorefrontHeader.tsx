@@ -1,9 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { Badge, Box, IconButton, ListItemIcon, Menu, MenuItem } from "@mui/material";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutlineOutlined";
+import { Badge, Box, IconButton } from "@mui/material";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLongOutlined";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBagOutlined";
 import LogoutIcon from "@mui/icons-material/LogoutOutlined";
@@ -28,18 +26,10 @@ export default function StorefrontHeader() {
   const token = useAppSelector((s) => s.auth.token);
   const activeCat = params.get("category");
 
-  // Profile dropdown (only for signed-in users; guests go straight to login).
-  const [menuAnchor, setMenuAnchor] = React.useState<null | HTMLElement>(null);
-  const menuOpen = Boolean(menuAnchor);
-
-  const onProfileClick = (e: React.MouseEvent<HTMLElement>) => {
-    if (token) setMenuAnchor(e.currentTarget);
-    else router.push("/login");
-  };
-  const closeMenu = () => setMenuAnchor(null);
-  const signOut = () => {
-    closeMenu();
-    dispatch(logout());
+  // Profile icon = logout: clicking it signs the user out and returns to login.
+  // (Guests have no session, so it simply takes them to the login page.)
+  const handleLogout = () => {
+    if (token) dispatch(logout());
     router.push("/login");
   };
 
@@ -93,40 +83,9 @@ export default function StorefrontHeader() {
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
         <ThemeToggle />
-        <IconButton
-          onClick={onProfileClick}
-          sx={{ color: "text.secondary" }}
-          aria-label="Account"
-          aria-haspopup={token ? "menu" : undefined}
-          aria-expanded={menuOpen ? "true" : undefined}
-        >
-          <PersonOutlineIcon sx={{ fontSize: 20 }} />
+        <IconButton onClick={handleLogout} sx={{ color: "text.secondary" }} aria-label="Log out">
+          <LogoutIcon sx={{ fontSize: 20 }} />
         </IconButton>
-        <Menu
-          anchorEl={menuAnchor}
-          open={menuOpen}
-          onClose={closeMenu}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          transformOrigin={{ vertical: "top", horizontal: "right" }}
-          slotProps={{
-            paper: {
-              sx: {
-                mt: 1,
-                minWidth: 180,
-                border: "1px solid",
-                borderColor: "maison.line.l12",
-                borderRadius: 1.5,
-              },
-            },
-          }}
-        >
-          <MenuItem onClick={signOut} sx={{ fontSize: 14, py: 1.1, color: "secondary.main" }}>
-            <ListItemIcon sx={{ color: "secondary.main", minWidth: 32 }}>
-              <LogoutIcon sx={{ fontSize: 18 }} />
-            </ListItemIcon>
-            Logout
-          </MenuItem>
-        </Menu>
         <IconButton onClick={() => router.push("/orders")} sx={{ color: "text.secondary" }} aria-label="Orders">
           <ReceiptLongIcon sx={{ fontSize: 20 }} />
         </IconButton>

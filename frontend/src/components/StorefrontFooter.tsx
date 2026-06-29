@@ -7,15 +7,16 @@ export default function StorefrontFooter() {
   return (
     <Box
       sx={{
+        // Full-width top divider; content pushed to the screen edges.
         borderTop: "1px solid",
         borderColor: "maison.line.l08",
-        px: 5,
+        px: { xs: 3, sm: 5 },
         py: 3.5,
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        maxWidth: 1440,
-        mx: "auto",
+        gap: 2,
+        flexWrap: "wrap",
       }}
     >
       <Typography sx={{ fontWeight: 600, fontSize: 11, letterSpacing: ".32em", color: "text.disabled" }}>

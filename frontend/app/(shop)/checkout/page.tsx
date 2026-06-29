@@ -122,6 +122,7 @@ function CheckoutInner() {
                   <Box sx={{ flex: 1 }}>
                     <Typography sx={{ fontWeight: 500, fontSize: 14 }}>{line.product.name}</Typography>
                     <Typography sx={{ fontSize: 12, color: "text.disabled" }}>{line.product.category} · Size {line.size} · ×{line.quantity}</Typography>
+                    <Typography sx={{ fontSize: 11.5, color: "text.disabled" }}>{line.product.stock} in stock</Typography>
                   </Box>
                   <Typography sx={{ fontWeight: 600, fontSize: 14 }}>{gbp(line.lineTotal)}</Typography>
                 </Box>

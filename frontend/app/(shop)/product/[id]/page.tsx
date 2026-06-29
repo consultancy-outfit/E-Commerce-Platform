@@ -44,6 +44,19 @@ export default function ProductPage() {
 
   const stock = stockState(product.stock);
   const soldOut = product.stock <= 0;
+  const atMax = qty >= product.stock;
+
+  const incQty = () => {
+    if (qty >= product.stock) {
+      toast({
+        title: "Stock limit reached",
+        text: `Only ${product.stock} item${product.stock === 1 ? "" : "s"} available in stock.`,
+        severity: "warning",
+      });
+      return;
+    }
+    setQty((q) => q + 1);
+  };
 
   const handleAdd = async () => {
     if (!token) {
@@ -95,6 +108,9 @@ export default function ProductPage() {
             <Typography sx={{ fontSize: 24 }}>{gbp(product.price)}</Typography>
             <StatusBadge label={stock.label} />
           </Box>
+          <Typography sx={{ fontSize: 13, color: "text.disabled", mb: 2.5 }}>
+            {soldOut ? "Currently out of stock" : `${product.stock} available in stock`}
+          </Typography>
           <Typography sx={{ fontSize: 15, lineHeight: 1.7, color: "text.secondary", mb: 3.25 }}>
             {product.description}
           </Typography>
@@ -142,8 +158,9 @@ export default function ProductPage() {
               <Box sx={{ width: 50, textAlign: "center", fontWeight: 600, fontSize: 16, color: "text.primary" }}>{qty}</Box>
               <Box
                 component="button"
-                onClick={() => setQty((q) => Math.min(product.stock || 1, q + 1))}
-                sx={{ width: 46, height: 52, bgcolor: "maison.surface2", border: "none", color: "text.secondary", fontSize: 20, cursor: "pointer" }}
+                onClick={incQty}
+                disabled={soldOut || atMax}
+                sx={{ width: 46, height: 52, bgcolor: "maison.surface2", border: "none", color: "text.secondary", fontSize: 20, cursor: soldOut || atMax ? "default" : "pointer", opacity: soldOut || atMax ? 0.4 : 1 }}
               >
                 +
               </Box>

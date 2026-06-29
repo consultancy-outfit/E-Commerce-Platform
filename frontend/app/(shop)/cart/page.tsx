@@ -29,6 +29,18 @@ function CartInner() {
     }
   };
 
+  const increase = (productId: string, size: string, quantity: number, stock: number) => {
+    if (quantity >= stock) {
+      toast({
+        title: "Stock limit reached",
+        text: `Only ${stock} item${stock === 1 ? "" : "s"} available in stock.`,
+        severity: "warning",
+      });
+      return;
+    }
+    updateItem({ productId, size, quantity: quantity + 1 });
+  };
+
   if (isLoading || !cart) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 12 }}>
@@ -79,8 +91,11 @@ function CartInner() {
                 <Typography variant="h6" sx={{ fontSize: 18, mb: 0.6 }}>
                   {line.product.name}
                 </Typography>
-                <Typography sx={{ fontSize: 13, color: "text.disabled", mb: 2 }}>
+                <Typography sx={{ fontSize: 13, color: "text.disabled", mb: 0.5 }}>
                   {line.product.category} · Size {line.size}
+                </Typography>
+                <Typography sx={{ fontSize: 12, color: "text.disabled", mb: 1.5 }}>
+                  {line.product.stock} in stock
                 </Typography>
                 <Box sx={{ display: "inline-flex", alignItems: "center", border: "1px solid", borderColor: "maison.line.l18", borderRadius: 1, overflow: "hidden" }}>
                   <Box
@@ -93,8 +108,9 @@ function CartInner() {
                   <Box sx={{ width: 40, textAlign: "center", fontWeight: 600, fontSize: 14, color: "text.primary" }}>{line.quantity}</Box>
                   <Box
                     component="button"
-                    onClick={() => updateItem({ productId: line.productId, size: line.size, quantity: line.quantity + 1 })}
-                    sx={{ width: 34, height: 36, bgcolor: "maison.surface2", border: "none", color: "text.secondary", cursor: "pointer" }}
+                    onClick={() => increase(line.productId, line.size, line.quantity, line.product.stock)}
+                    disabled={line.quantity >= line.product.stock}
+                    sx={{ width: 34, height: 36, bgcolor: "maison.surface2", border: "none", color: "text.secondary", cursor: line.quantity >= line.product.stock ? "default" : "pointer", opacity: line.quantity >= line.product.stock ? 0.4 : 1 }}
                   >
                     +
                   </Box>
